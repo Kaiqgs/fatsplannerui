@@ -1,0 +1,88 @@
+<!-- a container for title display in single page, title is `Macro Diary` -->
+<div
+  class="d-flex flex-column align-items-center justify-content-between h-100"
+>
+  <h3>Macro Diary</h3>
+
+  <!-- bootstrap form, with a text search input, a numeric input for amount with 2 decimals, and a third input select for measure units, a fourth select input with the option of previous meals or to create a new one-->
+  <form
+    class="d-flex flex-row justify-content-center align-items-around"
+    [formGroup]="form"
+  >
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="selectAutocomplete($event)"
+    >
+      <mat-option *ngFor="let option of objOptions" [value]="option.name">
+        {{ option.name }}
+      </mat-option>
+    </mat-autocomplete>
+    <input
+      #nameInput
+      type="text"
+      style="width: 20vw"
+      class="form-control"
+      placeholder="Search"
+      aria-label="Search"
+      (focus)="onFocus()"
+      (keydown)="searchBoxKeyDown($event)"
+      formControlName="name"
+      [matAutocomplete]="auto"
+    />
+    <input
+      type="number"
+      style="width: 7vw"
+      class="form-control"
+      placeholder="Amount"
+      aria-label="Amount"
+      step="0.01"
+      formControlName="amount"
+      (focus)="onFocus()"
+      (keydown)="anyInputKeyDown($event)"
+    />
+    <select
+      class="form-select"
+      style="width: 8vw"
+      aria-label="Default select example"
+      formControlName="meal"
+      name="meal"
+      (focus)="onFocus()"
+      (keydown)="anyInputKeyDown($event)"
+    >
+      <option *ngFor="let item of mealOptions">
+        {{ item }}
+      </option>
+    </select>
+  </form>
+  <app-macros-bar
+    [macros]="macros"
+    [showKcal]="false"
+    class="d-flex flex-row flex-nowrap"
+  ></app-macros-bar>
+  <app-macros-bar
+    [macros]="missingMacros"
+    [showKcal]="false"
+    class="d-flex flex-row flex-nowrap"
+  ></app-macros-bar>
+  <div class="d-flex">
+    <!-- resetDiary() button submit -->
+    <button type="button" class="btn btn-danger" (click)="resetDiary()">
+      Reset Diary
+    </button>
+    <!-- target match button submit (click)="targetMatch()" -->
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="matchTarget(planning.target)"
+    >
+      Target Match
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="matchTarget(missingMacros)"
+    >
+      Complement Match
+    </button>
+  </div>
+</div>

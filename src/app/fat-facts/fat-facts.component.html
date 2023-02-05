@@ -1,0 +1,36 @@
+<!-- TODO: on option to weigh raw or cooked, use keywords to notify user if otherwise is encountered -->
+<!-- TODO: find potential duplicates (besides uniquenes) in data 
+    Example: Test one of the word agains others;
+-->
+<h3>Lookup</h3>
+<app-multi-table-view
+#multiTableView
+[groupedFacts]="groupedFact"
+[displayColumns]="displayedColumns"
+></app-multi-table-view>
+
+<!-- <mat-tab-group class="limited-page">
+  <mat-tab label="Simple">
+    <app-multi-table-view
+      #multiTableView
+      [groupedFacts]="groupedFact"
+      [displayColumns]="displayedColumns"
+    ></app-multi-table-view>
+  </mat-tab>
+  <mat-tab label="Week">
+    <app-multi-table-view
+      #multiTableView
+      [groupedFacts]="groupedFact"
+      [displayColumns]="displayedColumns"
+      [transform]="weekTransform"
+    ></app-multi-table-view>
+  </mat-tab>
+  <mat-tab label="Week Invert">
+    <app-multi-table-view
+      #multiTableView
+      [groupedFacts]="groupedFact"
+      [displayColumns]="displayedColumns"
+      [transform]="weekInvertTransform"
+    ></app-multi-table-view>
+  </mat-tab>
+</mat-tab-group> -->

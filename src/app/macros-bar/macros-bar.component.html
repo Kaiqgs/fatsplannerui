@@ -1,0 +1,15 @@
+<div class="input-group d-flex justify-content-around g-3 w-100 h-100" *ngFor="let macro of parsed">
+  <div class="d-flex flex-column fit-input">
+    <div class="d-flex">
+      <input type="number" class="form-control" placeholder="7" aria-label="days"
+        aria-describedby="number-of-meals-in-day" min="1" [readonly]="readOnly" [value]="macro[0]" />
+      <span class="input-group-text">{{ macro[2] }}</span>
+    </div>
+    <div class="progress">
+      <div class="progress-bar {{ macro[3] }}" role="progressbar" aria-label="Example with label"
+        [style.width]="pctify(macro[1])" aria-valuemin="0" aria-valuemax="100">
+        {{ pctify(macro[1]) }}
+      </div>
+    </div>
+  </div>
+</div>

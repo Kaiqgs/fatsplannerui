@@ -1,0 +1,120 @@
+<!-- 
+a form with the following fields:
+    [first group]
+        - name: string;
+        - unit: string;
+        - amount: number;
+    
+    [second group]
+        - carbs: number;
+        - prots: number;
+        - fats: number;
+    
+    [third group]
+        - sodium: number;
+        - fiber: number;
+ -->
+
+<form>
+  <mat-vertical-stepper>
+    <mat-step [stepControl]="firstFormGroup" class="form-group">
+      <form [formGroup]="firstFormGroup">
+        <!-- Name -->
+        <ng-template matStepLabel>Food</ng-template>
+        <label for="name">Name</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="Banana example"
+          formControlName="name"
+          required
+        />
+        <!-- Unit -->
+        <label for="unit">Unit</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="g"
+          formControlName="unit"
+          required
+        />
+        <!-- Amount -->
+        <label for="amount">Amount</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="100"
+          formControlName="amount"
+          required
+        />
+        <div>
+          <button class="btn btn-primary" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Second step -->
+    <mat-step [stepControl]="secondFormGroup">
+      <form [formGroup]="secondFormGroup">
+        <!-- Carbs -->
+        <ng-template matStepLabel>Macros</ng-template>
+        <label for="carbs">Carbs</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="20"
+          formControlName="carbs"
+          required
+        />
+        <!-- Proteins -->
+        <label for="prots">Proteins</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="1"
+          formControlName="prots"
+          required
+        />
+        <!-- Fats -->
+        <label for="fats">Fats</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="0.5"
+          formControlName="fats"
+          required
+        />
+        <div>
+          <button class="btn btn-primary" mat-button matStepperPrevious>Back</button>
+          <button class="btn btn-primary" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Third step -->
+    <mat-step [stepControl]="thirdFormGroup">
+      <form [formGroup]="thirdFormGroup">
+        <!-- Sodium -->
+        <ng-template matStepLabel>Details</ng-template>
+        <label for="sodium">Sodium</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="1000"
+          formControlName="sodium"
+        />
+        <!-- Fiber -->
+        <label for="fiber">Fiber</label>
+        <input
+          class="form-control"
+          matInput
+          placeholder="2"
+          formControlName="fiber"
+        />
+        <div>
+          <button class="btn btn-primary" mat-button matStepperPrevious>Back</button>
+          <button class="btn btn-primary" mat-button matStepperNext (click)="onSubmit()">Submit</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-vertical-stepper>
+  <div></div>
+</form>

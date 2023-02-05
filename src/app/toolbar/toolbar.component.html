@@ -1,0 +1,170 @@
+<form class="d-flex flex-column" [formGroup]="form">
+  <div class="input-group input-group-plan" formGroupName="schedule">
+    <span class="input-group-text" id="number-of-days-plan">mealprep for</span>
+    <input
+      type="number"
+      class="form-control fit-input"
+      placeholder="7"
+      aria-label="days"
+      aria-describedby="number-of-days-plan"
+      min="1"
+      value="7"
+      formControlName="mealForDays"
+    />
+    <span class="input-group-text">days for</span>
+    <input
+      type="number"
+      class="form-control fit-input"
+      placeholder="7"
+      aria-label="days"
+      aria-describedby="number-of-meals-in-day"
+      min="1"
+      value="5"
+      formControlName="mealsInDay"
+    />
+    <span class="input-group-text">meals in a day</span>
+  </div>
+  <div class="input-group-plan">
+    <h4>Target:</h4>
+    <div  class="input-group" formGroupName="target">
+      <div>
+        <input
+          type="number"
+          class="form-control fit-input"
+          placeholder="7"
+          aria-label="days"
+          aria-describedby="number-of-meals-in-day"
+          min="1"
+          value="250"
+          formControlName="carbs"
+        />
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            aria-label="Example with label"
+            [style.width]="pctify(targetpct.carbs)"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ pctify(targetpct.carbs) }}
+          </div>
+        </div>
+      </div>
+      <span class="input-group-text">carbs</span>
+      <div>
+        <input
+          type="number"
+          class="form-control fit-input"
+          placeholder="7"
+          aria-label="days"
+          aria-describedby="number-of-meals-in-day"
+          min="1"
+          value="230"
+          formControlName="prots"
+        />
+        <div class="progress">
+          <div
+            class="progress-bar bg-success"
+            role="progressbar"
+            aria-label="Example with label"
+            [style.width]="pctify(targetpct.prots)"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ pctify(targetpct.prots) }}
+          </div>
+        </div>
+      </div>
+      <span class="input-group-text">prots</span>
+      <div>
+        <input
+          type="number"
+          class="form-control fit-input"
+          placeholder="7"
+          aria-label="days"
+          aria-describedby="number-of-meals-in-day"
+          min="1"
+          value="90"
+          formControlName="fats"
+        />
+        <div class="progress">
+          <div
+            class="progress-bar bg-warning"
+            role="progressbar"
+            aria-label="Example with label"
+            [style.width]="pctify(targetpct.fats)"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ pctify(targetpct.fats) }}
+          </div>
+        </div>
+      </div>
+      <span class="input-group-text">fats</span>
+      <div>
+        <input
+          type="number"
+          class="form-control fit-input"
+          placeholder="..."
+          aria-label="days"
+          readonly="true"
+          aria-describedby="number-of-meals-in-day"
+          formControlName="kcal"
+        />
+        <div class="progress">
+          <div
+            class="progress-bar bg-info"
+            role="progressbar"
+            aria-label="Example with label"
+            [style.width]="pctify(targetpct.kcal)"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ pctify(targetpct.kcal) }}
+          </div>
+        </div>
+      </div>
+      <span class="input-group-text">kcal</span>
+    </div>
+  </div>
+  <div class="d-flex flex-column input-group-plan" formGroupName="grouping">
+    <span>Group</span>
+    <div class="d-flex">
+      <div class="form-check form-switch mx-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="checkGroupMeal"
+          formControlName="meal"
+        />
+        <label class="form-check-label" for="checkGroupMeal">Meal</label>
+      </div>
+      <div class="form-check form-switch mx-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="checkGroupSource"
+          formControlName="source"
+        />
+        <label class="form-check-label" for="checkGroupSource">Source</label>
+      </div>
+      <div class="form-check form-switch mx-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="checkGroupSource"
+          formControlName="name"
+        />
+        <label class="form-check-label" for="checkGroupSource">Name</label>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,29 @@
+<!-- This is the nutrient bank component -->
+<!-- displays component title in beatiful way -->
+
+<div>
+  <div class="d-flex flex-column align-items-center">
+    <h3>Nutrient Bank</h3>
+  </div>
+  <div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search by name"
+      (focus)="focusData()"
+    />
+    <!-- Button to add a new nutrient -->
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="showNewNutrient()"
+      data-bs-toggle="modal"
+      data-bs-target="#addNewNutrientModal"
+    >
+      Add new nutrient
+    </button>
+    <button type="button" class="btn btn-danger" (click)="resetDatabase()">
+      Reset Database
+    </button>
+  </div>
+</div>

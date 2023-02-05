@@ -1,0 +1,48 @@
+<div class="d-flex flex-column container">
+  <h3>
+    <span class="text-success">Fatsecret</span> input
+  </h3>
+
+  <button
+    type="button"
+    class="btn btn-outline-primary"
+    (click)="addInputSource()"
+  >
+    Add
+  </button>
+
+  <div *ngFor="let input of inputs; let i = index">
+    <div class="m-1 p-3 border">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="removeInputSource(input.brief)"
+      >
+        remove
+      </button>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon">describe</span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="what for?"
+          aria-label="description"
+          aria-describedby="basic-addon"
+          (change)="onChangeSource(i, { brief: $event.target })"
+          [value]="input.brief"
+        />
+      </div>
+      <div class="form-floating">
+        <textarea
+          class="form-control"
+          placeholder="Leave a comment here"
+          id="floatingTextarea"
+          style="height: 100px"
+          (change)="onChangeSource(i, { html: $event.target })"
+          >{{ input.html }}</textarea
+        >
+        <label for="floatingTextarea">Source HTML</label>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<div *ngFor="let factsPlan of groupedFacts">
+  <app-table
+    #table
+    [displayColumns]="displayColumns"
+    [data]="factsPlan.getData(transform)"
+    [limit]="limitDivided"
+  ></app-table>
+</div>

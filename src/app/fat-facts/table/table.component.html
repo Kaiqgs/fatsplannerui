@@ -1,0 +1,40 @@
+<div class="table-responsive">
+  <form [formGroup]="form">
+    <div class="form-check">
+      <input
+        type="checkbox"
+        [id]="data.id + '_group_check'"
+        formGroupName="selected"
+        class="mx-1"
+        [checked]="!form.value.selected"
+        (change)="onSelectChange($event)"
+      />
+      <label class="form-check-label" [for]="data.id + '_group_check'">
+        select |
+      </label>
+      <span> {{ data.representative }}</span>
+    </div>
+  </form>
+
+  <table class="table table-striped table-sm">
+    <thead class="table-dark">
+      <tr>
+        <td *ngFor="let col of displayColumns">{{ col }}</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data.data.slice(0, limit)">
+        <td *ngFor="let col of displayColumns">
+          {{ $any(row)[col] }}
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th *ngFor="let col of displayColumns">
+          {{ $any(data.sum)[col] }}
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

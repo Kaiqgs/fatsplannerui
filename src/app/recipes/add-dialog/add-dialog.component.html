@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>teste</h2>
+
+<mat-dialog-content>
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">name</span>
+    <input
+      #name
+      type="text"
+      class="form-control"
+      placeholder="name"
+      aria-label="name"
+      aria-describedby="basic-addon1"
+    />
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    class="btn btn-outline-secondary mat-raised-button"
+    (click)="cancel()"
+  >
+    cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-primary mat-raised-button mat-primary"
+    (click)="add()"
+  >
+    add
+  </button>
+
+  <!-- <button class="">Close</button>
+  <button class="">Save</button> -->
+</mat-dialog-actions>
