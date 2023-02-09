@@ -27,6 +27,7 @@ import { AddNutrientDialogComponent } from './nutrient-bank/add-nutrient-dialog/
 import {MatStepperModule} from '@angular/material/stepper';
 import { HttpClientModule } from '@angular/common/http';
 import { MacroMatchDialogComponent } from './macro-match-dialog/macro-match-dialog.component';
+import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-complex-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { MacroMatchDialogComponent } from './macro-match-dialog/macro-match-dial
     MacrosBarComponent,
     AddNutrientDialogComponent,
     MacroMatchDialogComponent,
+    ComposeComplexDialogComponent,
   ],
   imports: [
     

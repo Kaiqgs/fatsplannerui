@@ -12,7 +12,9 @@
       placeholder="Search by name"
       (focus)="focusData()"
     />
-    <!-- Button to add a new nutrient -->
+    <button type="button" class="btn btn-danger" (click)="resetDatabase()">
+      Reset Database
+    </button>
     <button
       type="button"
       class="btn btn-primary"
@@ -22,8 +24,15 @@
     >
       Add new nutrient
     </button>
-    <button type="button" class="btn btn-danger" (click)="resetDatabase()">
-      Reset Database
+    <!-- open modall to add complex nutrient -->
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="showNewComplexNutrient()"
+      data-bs-toggle="modal"
+      data-bs-target="#addNewComplexNutrientModal"
+    >
+      Add complex nutrient
     </button>
   </div>
 </div>

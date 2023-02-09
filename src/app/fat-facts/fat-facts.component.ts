@@ -16,11 +16,12 @@ import {
 } from 'src/common/models/factplanning.model';
 
 import {
-  FatsecretContainer,
+  ComplexContainer,
   FatFacts,
-  FatsecretData,
-  FatsecretContainerContainer,
+  LabeledNutrient,
+  ComplexContainer2D,
   MacroCalories,
+  ComplexNutrient,
 } from 'src/common/models/fatfacts.model';
 import { PlanningDetails } from 'src/common/models/planning.model';
 import { Recipe } from 'src/common/models/recipe.model';
@@ -33,7 +34,7 @@ import { MultiTableViewComponent } from './multi-table-view/multi-table-view.com
 })
 export class FatFactsComponent {
   @Input()
-  sourceFacts: FatsecretContainerContainer = [];
+  sourceFacts: ComplexContainer2D = [];
 
   @Input()
   planning!: PlanningDetails;
@@ -42,7 +43,7 @@ export class FatFactsComponent {
   multiTableView = new QueryList<MultiTableViewComponent>();
 
   get selectTables() {
-    const tableGroups: Array<FatsecretContainerContainer> = [];
+    const tableGroups: Array<ComplexContainer2D> = [];
     this.multiTableView.forEach((element) => {
       tableGroups.push(element.selectedGroups);
     });
@@ -57,22 +58,13 @@ export class FatFactsComponent {
     return row / (this.planning?.schedule.mealForDays || 1);
   };
 
-  get flatFacts(): FatsecretContainer {
+  get flatFacts(): ComplexContainer {
     return this.sourceFacts.flat();
   }
 
   get groupedFact(): FactPlanningContainer {
-    // let groups = groupBy(this.flatFacts, (data: FatsecretData) => {
-    //   let union = "";
 
-    //   for(const group in this.planning.grouping){
-    //     console.log(group)
-    //     union += (data as any)[group];
-    //   }
-    //   return union;
-    // });
-
-    let groups = groupBy(this.flatFacts, (data: FatsecretData) => {
+    let groups = groupBy(this.flatFacts, (data: ComplexNutrient) => {
       const group =
         (this.planning?.grouping.meal ? data.meal : '') +
         (this.planning?.grouping.source ? data.source : '') +

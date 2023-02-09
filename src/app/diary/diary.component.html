@@ -72,17 +72,20 @@
     <!-- target match button submit (click)="targetMatch()" -->
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-secondary"
       (click)="matchTarget(planning.target)"
     >
       Target Match
     </button>
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-secondary"
       (click)="matchTarget(missingMacros)"
     >
       Complement Match
+    </button>
+    <button type="button" class="btn btn-primary" (click)="showAddComplex()">
+      Add complex  
     </button>
   </div>
 </div>

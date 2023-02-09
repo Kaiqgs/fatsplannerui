@@ -7,29 +7,33 @@ import {
 } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import {
+  ComplexNutrient,
   dataFromReference,
-  FatsecretContainer,
-  FatsecretData,
-  FatsecreteReadContainer,
-  MacroCalories,
+  ComplexContainer,
+  ComplexReadContainer,
   macroFromGroup,
   Macronutrients,
-  macroRatio,
+  MacroContainer,
+  emptyMacro,
 } from 'src/common/models/fatfacts.model';
 import { Focusable } from '../app.component';
 
 import fuzzysort from 'fuzzysort';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MacroMatchDialogComponent } from '../macro-match-dialog/macro-match-dialog.component';
 import { PlanningDetails } from 'src/common/models/planning.model';
 import {
-  MatAutocomplete,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
 
 type ConsumptionHistory = { [key: string]: Array<Date> };
-type DiaryHistory = [Date, FatsecretContainer];
+
+interface RecordHistory {
+  date: Date;
+  records: string[];
+}
 
 @Component({
   selector: 'app-diary',
@@ -37,14 +41,15 @@ type DiaryHistory = [Date, FatsecretContainer];
   styleUrls: ['./diary.component.scss'],
 })
 export class DiaryComponent {
-  history: [Date, FatsecretContainer];
+  history: ComplexContainer = [];
   consumption: ConsumptionHistory = {};
-  objOptions: FatsecretContainer = [];
+  objOptions: ComplexContainer = [];
   mealOptions: string[] = ['Other', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
-  macros: Macronutrients = { carbs: 0, prots: 0, fats: 0, kcal: 0 };
+  macros: Macronutrients = emptyMacro();
+  records: RecordHistory;
 
   @Input()
-  public source: FatsecreteReadContainer = [];
+  public source: ComplexReadContainer = [];
 
   @Input()
   planning!: PlanningDetails;
@@ -62,24 +67,42 @@ export class DiaryComponent {
     private _fb: FormBuilder,
     private _dialog: MatDialog
   ) {
-    let history: DiaryHistory = [new Date(), []];
-
-    if (_cookieService.check('diaryHistory')) {
-      history = JSON.parse(_cookieService.get('diaryHistory'));
-      history[0] = new Date(history[0]);
-    }
-
-    if (history[0].getDate() !== new Date().getDate()) {
-      history = [new Date(), []];
-    }
-
-    console.log(history);
-    this.history = history;
+    this.records = {
+      date: new Date(),
+      records: [],
+    };
+    this._readCookies();
     this._generateForm();
-    this.macros = macroFromGroup(this.history[1]);
+    this.macros = macroFromGroup(this.history);
+    this._handleTodayChanged();
     if (this.planning) {
       this.macros.kcal = this.planning.target.kcal - this.macros.kcal;
     }
+  }
+
+  private _handleTodayChanged() {
+    if (this.records.date.getDate() !== new Date().getDate()) {
+      //check if history is valid;
+      //if valid store on cookies
+      let metack = this._cookieService.get('diaryMetaHistory');
+      let meta: MacroContainer = metack ? JSON.parse(metack) : [];
+      meta.push(this.macros);
+      this._cookieService.set('diaryMetaHistory', JSON.stringify(meta));
+      this.resetDiary();
+    }
+  }
+
+  private _readCookies() {
+    if (this._cookieService.check('diaryHistory')) {
+      this.records = JSON.parse(this._cookieService.get('diaryHistory'));
+      this.records.date = new Date(this.records.date);
+    }
+    this.records.records.forEach((code) => {
+      let history = this._cookieService.get(code);
+      if (history) {
+        this.history.push(JSON.parse(history));
+      }
+    });
   }
 
   get missingMacros() {
@@ -93,9 +116,8 @@ export class DiaryComponent {
       kcal: kcalLength,
     };
     return missing;
-    const mratio = macroRatio(missing);
-
-    return mratio;
+    // const mratio = macroRatio(missing);
+    // return mratio;
   }
   //generate form
   _generateForm() {
@@ -120,7 +142,6 @@ export class DiaryComponent {
 
   selectAutocomplete(event: MatAutocompleteSelectedEvent) {
     this.objOptions.sort((x) => (x.name === event.option.value.name ? 1 : -1));
-
     console.log(event.option);
   }
 
@@ -134,32 +155,44 @@ export class DiaryComponent {
         this.form.value.meal
       );
       this.addRecord(newObj);
-      this.macros = macroFromGroup(this.history[1]);
       this._generateForm();
       this.nameInput?.focus();
     }
   }
 
   //Adds one record to the history;
-  public addRecord(record: FatsecretData) {
-    this.history[1].push(record);
-    this._cookieService.set('diaryHistory', JSON.stringify(this.history));
-    this.consumption[record.name] = this.consumption[record.name] || [];
-    this.consumption[record.name].push(new Date());
-    //set cookie for consumption history;
-    this._cookieService.set(
-      'diaryConsumptionHistory',
-      JSON.stringify(this.consumption)
-    );
+  public addRecord(record: ComplexNutrient) {
+    const randomName = `diary:${Math.random().toString(36).substring(7)}`;
+    this.records.records.push(randomName);
+    this._cookieService.set(randomName, JSON.stringify(record));
+    this.history.push(record);
+    this.macros = macroFromGroup(this.history);
+    this._cookieService.set('diaryHistory', JSON.stringify(this.records));
+    // this.consumption[record.name] = this.consumption[record.name] || [];
+    // this.consumption[record.name].push(new Date());
+    // //set cookie for consumption history;
+    // this._cookieService.set(
+    //   'diaryConsumptionHistory',
+    //   JSON.stringify(this.consumption)
+    // );
   }
 
   public onFocus() {
-    this.onFocusEvent.emit(['Diary', this.history[1]]);
+    this.onFocusEvent.emit(['Diary', this.history]);
   }
   //resetDiary resets cookies and reloads the page;
   public resetDiary() {
+    this.records.records.forEach((code) => { this._cookieService.delete(code); });
     this._cookieService.delete('diaryHistory');
-    window.location.reload();
+    this.history = [];
+    this.macros = emptyMacro();
+    this.records.records = [];
+    this.onFocusEvent.emit(['Diary Change', this.history]);
+  }
+
+  public resetDiaryReload() {
+    this.resetDiary();
+    // window.location.reload();
   }
 
   public matchTarget(target: Macronutrients) {
@@ -169,5 +202,21 @@ export class DiaryComponent {
         source: this.source,
       },
     });
+  }
+
+  public showAddComplex() {
+    this._dialog
+      .open(ComposeComplexDialogComponent, {
+        data: {
+          source: this.source,
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        console.log('Result', result);
+        if (result) {
+          this.addRecord(result);
+        }
+      });
   }
 }

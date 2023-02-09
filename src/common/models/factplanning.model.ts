@@ -1,10 +1,15 @@
-import { FatsecretContainer, FatsecretData, MacroCalories } from './fatfacts.model';
+import {
+  ComplexNutrient,
+  ComplexContainer,
+  LabeledNutrient,
+  MacroCalories,
+} from './fatfacts.model';
 
 let _globalFactCounter = 0;
 
 export class FactPlanning {
   id: number;
-  constructor(private fatdata: FatsecretContainer) {
+  constructor(private fatdata: ComplexContainer) {
     _globalFactCounter += 1;
     this.id = _globalFactCounter;
   }
@@ -32,7 +37,7 @@ export class FactPlanning {
       name: 'Resulting: ',
       unit: '',
     };
-    const data = this.fatdata.map((data: FatsecretData): FatsecretData => {
+    const data = this.fatdata.map((data: ComplexNutrient): ComplexNutrient => {
       const res: any = Object.assign({}, data);
       trackSum.forEach((key) => {
         res[key] = operation(res[key] || 0, key, data);
@@ -45,18 +50,27 @@ export class FactPlanning {
     trackSum.forEach((key) => {
       sum[key] = Math.round(sum[key] as number);
     });
-    
-    sum.carbs += " / " + Math.round(sum.carbs * MacroCalories.carbs / sum.kcal * 100) + "%";
-    sum.prots += " / " + Math.round(sum.prots * MacroCalories.prots / sum.kcal * 100) + "%";
-    sum.fats +=  " / " + Math.round(sum.fats * MacroCalories.fats / sum.kcal * 100) + "%";
-    return { data: data, sum: sum, representative: "none", id:this.id };
+
+    sum.carbs +=
+      ' / ' +
+      Math.round(((sum.carbs * MacroCalories.carbs) / sum.kcal) * 100) +
+      '%';
+    sum.prots +=
+      ' / ' +
+      Math.round(((sum.prots * MacroCalories.prots) / sum.kcal) * 100) +
+      '%';
+    sum.fats +=
+      ' / ' +
+      Math.round(((sum.fats * MacroCalories.fats) / sum.kcal) * 100) +
+      '%';
+    return { data: data, sum: sum, representative: 'none', id: this.id };
   }
 }
 
 export interface FactPlanningContainer extends Array<FactPlanning> {}
 export interface PlanningResponse {
-  id: number,
-  data: FatsecretContainer,
-  sum: FatsecretData,
-  representative: string
+  id: number;
+  data: ComplexContainer;
+  sum: LabeledNutrient;
+  representative: string;
 }

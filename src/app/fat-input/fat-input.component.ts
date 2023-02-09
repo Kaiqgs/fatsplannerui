@@ -1,8 +1,8 @@
 import { Component, EventEmitter, AfterViewInit, Output } from '@angular/core';
 import {
-  FatsecretContainer,
+  ComplexContainer,
   FatFacts,
-  FatsecretContainerContainer,
+  ComplexContainer2D,
 } from 'src/common/models/fatfacts.model';
 import { FatSource } from 'src/common/models/fatsource.model';
 import { initial } from './fat-input.constants';
@@ -14,7 +14,7 @@ import { initial } from './fat-input.constants';
 })
 export class FatInputComponent implements AfterViewInit {
   @Output()
-  changeSource = new EventEmitter<FatsecretContainerContainer>();
+  changeSource = new EventEmitter<ComplexContainer2D>();
 
 //   @Output()
 //   createSource = new EventEmitter<AllSecFacts>();

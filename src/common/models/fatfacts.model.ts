@@ -7,6 +7,15 @@ export interface Macronutrients {
   kcal: number;
 }
 
+export function emptyMacro(): Macronutrients {
+  return {
+    carbs: 0,
+    prots: 0,
+    fats: 0,
+    kcal: 0,
+  };
+}
+
 // export interface Macroratioed extends Macronutrients {
 //   carbsRatio: number;
 //   protsRatio: number;
@@ -19,7 +28,7 @@ export enum MacroCalories {
   fats = 9,
 }
 
-export interface FatsecretData extends Macronutrients {
+export interface LabeledNutrient extends Macronutrients {
   name: string;
   meal: string; // this is relational to meal table;
   source: string; // this is relational to fatsecret fat table;
@@ -29,39 +38,51 @@ export interface FatsecretData extends Macronutrients {
   fiber: number;
 }
 
-export interface ComplexMacronutrient extends FatsecretData {
-  complex: Array<[ComplexMacronutrient, number]>;
+//compute FatSecretData identifier string;
+export function getNutrientIdentifier(data: ComplexNutrient): string {
+  return `${data.name}-${data.meal}-${data.source}-${data.unit}`;
+}
+
+export type ComplexWeighted = [ComplexNutrient, number];
+export interface ComplexNutrient extends LabeledNutrient {
+  complex: Array<ComplexWeighted>;
 }
 
 export function computeComplexMacro(
-  macro: ComplexMacronutrient
-): ComplexMacronutrient {
+  macro: ComplexNutrient,
+  groupWeight: boolean = true
+): ComplexNutrient {
   //sum all the weights first
   let weight = macro.complex.reduce((acc, item) => acc + item[1], 0);
-  macro.complex.forEach((item) => {
-    const weighted = item[1] / weight;
+  macro.complex.forEach((item, index) => {
+    const weighted = groupWeight ? item[1] / weight : 1;
     macro.kcal += item[0].kcal * weighted;
     macro.carbs += item[0].carbs * weighted;
     macro.prots += item[0].prots * weighted;
     macro.fats += item[0].fats * weighted;
     macro.sodium += item[0].sodium * weighted;
     macro.fiber += item[0].fiber * weighted;
-    macro.name += `${item[0].name} (${(weighted * 100).toFixed(1)}%) + `;
+    macro.amount += item[0].amount * weighted;
+    macro.name += `${item[0].name}`;
+    if (groupWeight) macro.name += `(${(weighted * 100).toFixed(1)}%)`;
+    else macro.name += `(${item[0].amount} ${item[0].unit})`;
+    if (index != macro.complex.length - 1) macro.name += ' + ';
   });
   return macro;
 }
 
 export function dataFromReference(
-  data: FatsecretData,
+  data: ComplexNutrient,
   amount: number,
-  meal: string
-): FatsecretData {
+  meal: string = ''
+): ComplexNutrient {
   // scale data by amount
   const scaleFactor = amount / data.amount;
-  const scaledData: FatsecretData = {
+  const scaledData: ComplexNutrient = {
     ...data,
     amount: amount,
-    meal: meal,
+    meal: meal || data.meal,
+    complex: data.complex || [],
     kcal: data.kcal * scaleFactor,
     carbs: data.carbs * scaleFactor,
     prots: data.prots * scaleFactor,
@@ -130,7 +151,7 @@ export interface FatTable {
 
 export class FatFacts {
   document: Document | undefined;
-  allfatdata: FatsecretContainer = [];
+  allfatdata: ComplexContainer = [];
   brief: string = 'default';
   fatsmapping = [
     'nameAmount',
@@ -194,7 +215,7 @@ export class FatFacts {
           }
         }
 
-        this.allfatdata.push(parsedfatdata as FatsecretData);
+        this.allfatdata.push(parsedfatdata as ComplexNutrient);
       } else {
         mealName = fdata.nameAmount;
         console.log('failed: ' + fdata.nameAmount);
@@ -205,7 +226,9 @@ export class FatFacts {
 }
 
 export interface FatFactsContainer extends Array<FatFacts> {}
-export interface FatsecretContainer extends Array<FatsecretData> {}
-export interface FatsecreteReadContainer extends ReadonlyArray<FatsecretData> {}
-export interface FatsecretContainerContainer
-  extends Array<FatsecretContainer> {}
+export interface ComplexContainer extends Array<ComplexNutrient> {}
+export interface ComplexReadContainer
+  extends ReadonlyArray<ComplexNutrient> {}
+export interface ComplexContainer2D
+  extends Array<ComplexContainer> {}
+export interface MacroContainer extends Array<Macronutrients> {}

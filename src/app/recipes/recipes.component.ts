@@ -9,13 +9,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import FileSaver from 'file-saver';
-import { FatsecretContainerContainer } from 'src/common/models/fatfacts.model';
+import { ComplexContainer2D } from 'src/common/models/fatfacts.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddDialogComponent } from './add-dialog/add-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 
 export interface AddRecipeCallback {
-  (data: FatsecretContainerContainer): void;
+  (data: ComplexContainer2D): void;
 }
 
 @Component({
@@ -30,7 +30,7 @@ export class RecipesComponent implements OnInit {
   openInput!: ElementRef<HTMLElement>;
 
   @Input()
-  selectedFacts: FatsecretContainerContainer = [];
+  selectedFacts: ComplexContainer2D = [];
 
   @Output()
   onAddRecipe = new EventEmitter<AddRecipeCallback>();
@@ -40,7 +40,7 @@ export class RecipesComponent implements OnInit {
   ngOnInit(): void {}
 
   addRecipe() {
-    this.onAddRecipe.emit((data: FatsecretContainerContainer) => {
+    this.onAddRecipe.emit((data: ComplexContainer2D) => {
       console.log(data);
       if (data?.length > 0) {
         const newdiag = this._dialog.open(AddDialogComponent);

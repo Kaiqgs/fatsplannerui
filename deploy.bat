@@ -1,0 +1,1 @@
+ng deploy --base-href=https://Kaiqgs.github.io/fatsplannerui/

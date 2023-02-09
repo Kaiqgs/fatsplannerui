@@ -1,8 +1,8 @@
 import { FactPlanningContainer } from './factplanning.model';
-import { FatsecretContainer } from './fatfacts.model';
+import { ComplexContainer } from './fatfacts.model';
 
 export interface Recipe {
   name: string;
-  data: FatsecretContainer;
+  data: ComplexContainer;
   compute: FactPlanningContainer | undefined;
 }

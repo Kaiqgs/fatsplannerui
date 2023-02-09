@@ -1,0 +1,79 @@
+<div class="p-3">
+  <div class="form-group">
+    <label for="foodName">Search food</label>
+    <input
+      #nameInput
+      type="email"
+      class="form-control"
+      id="foodName"
+      placeholder="Banana?"
+      (keydown)="onKeyDown($event)"
+    />
+  </div>
+  <ul class="list-group">
+    <app-macros-bar [macros]="macros" class="d-flex"></app-macros-bar>
+    <form>
+      <li *ngFor="let complexSelected of selected" class="list-group-item">
+        <!-- input bootstrap checkbox -->
+        <div class="d-flex flex-row justify-content-around">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              checked="true"
+              (change)="deCheck(complexSelected)"
+              id="defaultCheck1"
+              
+            />
+            <label class="form-check-label" for="defaultCheck1">
+              {{ complexSelected.complex.name }}
+            </label>
+          </div>
+          <div class="d-flex align-items-center">
+            <input
+              style="width: 7vw"
+              type="number"
+              class="form-control"
+              id="amountInput"
+              placeholder="Amount"
+              [value]="complexSelected.amount"
+              (change)="onAmountChange(complexSelected, $event)"
+            />
+            <label for="amountInput">
+              {{ complexSelected.complex.unit }}
+            </label>
+          </div>
+        </div>
+      </li>
+    </form>
+    <hr />
+    <li *ngFor="let option of sortedK" class="list-group-item">
+      <!-- input bootstrap checkbox -->
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [checked]="false"
+          id="defaultCheck1"
+          (change)="onCheck(option, $event)"
+        />
+        <label class="form-check-label" for="defaultCheck1">
+          {{ option.name }}
+        </label>
+      </div>
+    </li>
+    <div>
+      <button type="button" class="btn btn-secondary" (click)="closeDialog()">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="createCloseDialog()"
+      >
+        Create
+      </button>
+    </div>
+  </ul>
+</div>

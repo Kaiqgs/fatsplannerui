@@ -1,8 +1,12 @@
-import { Component, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input } from '@angular/core';
 import { Macronutrients, macroRatio } from 'src/common/models/fatfacts.model';
 
-type MacroDisplay = [number, number, string, string];
+interface MacroDisplay {
+  value: number,
+  ratio: number,
+  name: string,
+  color: string
+}
 
 @Component({
   selector: 'app-macros-bar',
@@ -12,6 +16,9 @@ type MacroDisplay = [number, number, string, string];
 export class MacrosBarComponent {
   @Input()
   public showKcal = false;
+
+  @Input()
+  readOnly = true;
 
   @Input()
   public macros: Macronutrients = { carbs: 0, prots: 0, fats: 0, kcal: 0 };
@@ -36,23 +43,19 @@ export class MacrosBarComponent {
   get parsed(): MacroDisplay[] {
     let map: MacroDisplay[] = [];
     // iterate each key in view() and percents();
-
     this.names.forEach((name, index) => {
       if (!this.showKcal && index == 0) return;
-      map.push([
-        (this.view as any)[name],
-        (this.percents as any)[name],
+      map.push({
+        value: (this.view as any)[name],
+        ratio: (this.percents as any)[name],
         name,
-        this.colors[index],
-      ]);
+        color: this.colors[index],
+      });
     });
-
     return map;
   }
 
-  readOnly = true;
   // form: FormGroup;
-
   // constructor(private _fb: FormBuilder) {
   //   this.form = this._generateForm();
   //   this.valueChanged.subscribe((x) => {this.form = this._generateForm(x)});

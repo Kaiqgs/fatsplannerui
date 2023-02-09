@@ -12,9 +12,9 @@ import {
   FactPlanningContainer,
 } from 'src/common/models/factplanning.model';
 import {
-  FatsecretContainer,
-  FatsecretContainerContainer,
-  FatsecretData,
+  ComplexContainer,
+  ComplexContainer2D,
+  LabeledNutrient,
 } from 'src/common/models/fatfacts.model';
 import { TableComponent } from '../table/table.component';
 
@@ -44,7 +44,7 @@ export class MultiTableViewComponent implements OnInit {
   }
 
   get selectedGroups() {
-    const flatgroup: Array<FatsecretContainer> = [];
+    const flatgroup: Array<ComplexContainer> = [];
     this.tables.forEach((item, index) => {
       if (item.selected) {
         flatgroup.push(item.data.data);

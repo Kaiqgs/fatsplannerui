@@ -1,10 +1,10 @@
 import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
-  ComplexMacronutrient,
+  ComplexNutrient,
   computeComplexMacro,
-  FatsecretContainer,
-  FatsecreteReadContainer,
+  ComplexContainer,
+  ComplexReadContainer,
   Macronutrients,
   macroRatio,
   macroRatioDiff,
@@ -20,7 +20,7 @@ type MatchAttempt = [number, Macronutrients, string];
 export class MacroMatchDialogComponent {
   // @Input() source!: FatsecretContainer;
   // @Input() target!: Macronutrients;
-  source!: FatsecreteReadContainer;
+  source!: ComplexReadContainer;
   target!: Macronutrients;
 
   bestOptions: MatchAttempt[] = [];
@@ -77,7 +77,7 @@ export class MacroMatchDialogComponent {
     for (let i = 0; i < r; i++) {
       let combinationCount = Math.random() * k;
       let combinationIndexes: number[] = [];
-      let macro: ComplexMacronutrient = {
+      let macro: ComplexNutrient = {
         complex: [],
         name: '',
         meal: '',
