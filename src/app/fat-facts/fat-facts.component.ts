@@ -3,11 +3,8 @@ import {
   Input,
   ViewChildren,
   QueryList,
-  Output,
-  EventEmitter,
 } from '@angular/core';
 import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
 import groupBy from 'lodash/groupBy';
 import {
@@ -17,14 +14,10 @@ import {
 
 import {
   ComplexContainer,
-  FatFacts,
-  LabeledNutrient,
   ComplexContainer2D,
-  MacroCalories,
   ComplexNutrient,
 } from 'src/common/models/fatfacts.model';
 import { PlanningDetails } from 'src/common/models/planning.model';
-import { Recipe } from 'src/common/models/recipe.model';
 import { MultiTableViewComponent } from './multi-table-view/multi-table-view.component';
 
 @Component({

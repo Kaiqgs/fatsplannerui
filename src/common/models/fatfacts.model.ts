@@ -16,6 +16,20 @@ export function emptyMacro(): Macronutrients {
   };
 }
 
+export function emptyNutrient(): ComplexNutrient {
+  return {
+    name: '',
+    meal: '',
+    source: '',
+    unit: '',
+    amount: 0,
+    sodium: 0,
+    fiber: 0,
+    ...emptyMacro(),
+    complex: [],
+  };
+}
+
 // export interface Macroratioed extends Macronutrients {
 //   carbsRatio: number;
 //   protsRatio: number;
@@ -53,7 +67,8 @@ export function computeComplexMacro(
   groupWeight: boolean = true
 ): ComplexNutrient {
   //sum all the weights first
-  let weight = macro.complex.reduce((acc, item) => acc + item[1], 0);
+  const weight = macro.complex.reduce((acc, item) => acc + item[1], 0);
+  const units = new Set(macro.complex.map((item) => item[0].unit));
   macro.complex.forEach((item, index) => {
     const weighted = groupWeight ? item[1] / weight : 1;
     macro.kcal += item[0].kcal * weighted;
@@ -68,6 +83,7 @@ export function computeComplexMacro(
     else macro.name += `(${item[0].amount} ${item[0].unit})`;
     if (index != macro.complex.length - 1) macro.name += ' + ';
   });
+  macro.unit = Array.from(units).join('/');
   return macro;
 }
 

@@ -4,6 +4,7 @@ import {
   Input,
   Output,
   ViewChild,
+  HostListener,
 } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import {
@@ -27,6 +28,7 @@ import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
+import { AddNutrientDialogComponent } from '../nutrient-bank/add-nutrient-dialog/add-nutrient-dialog.component';
 
 type ConsumptionHistory = { [key: string]: Array<Date> };
 
@@ -80,6 +82,10 @@ export class DiaryComponent {
     }
   }
 
+  ngOnInit(): void {
+    this.onFocus();
+  }
+
   private _handleTodayChanged() {
     if (this.records.date.getDate() !== new Date().getDate()) {
       //check if history is valid;
@@ -87,7 +93,7 @@ export class DiaryComponent {
       let metack = this._cookieService.get('diaryMetaHistory');
       let meta: MacroContainer = metack ? JSON.parse(metack) : [];
       meta.push(this.macros);
-      this._cookieService.set('diaryMetaHistory', JSON.stringify(meta));
+      this._cookieService.set('diaryMetaHistory', JSON.stringify(meta), 365);
       this.resetDiary();
     }
   }
@@ -156,7 +162,7 @@ export class DiaryComponent {
       );
       this.addRecord(newObj);
       this._generateForm();
-      this.nameInput?.focus();
+      // this.nameInput?.focus();
     }
   }
 
@@ -164,21 +170,22 @@ export class DiaryComponent {
   public addRecord(record: ComplexNutrient) {
     const randomName = `diary:${Math.random().toString(36).substring(7)}`;
     this.records.records.push(randomName);
-    this._cookieService.set(randomName, JSON.stringify(record));
+    this._cookieService.set(randomName, JSON.stringify(record), 365);
     this.history.push(record);
     this.macros = macroFromGroup(this.history);
-    this._cookieService.set('diaryHistory', JSON.stringify(this.records));
+    this._cookieService.set('diaryHistory', JSON.stringify(this.records), 365);
     // this.consumption[record.name] = this.consumption[record.name] || [];
     // this.consumption[record.name].push(new Date());
     // //set cookie for consumption history;
     // this._cookieService.set(
     //   'diaryConsumptionHistory',
-    //   JSON.stringify(this.consumption)
+    //   JSON.stringify(this.consumption),
+    //  365
     // );
   }
 
   public onFocus() {
-    this.onFocusEvent.emit(['Diary', this.history]);
+    this.onFocusEvent.emit({name:'Diary', data:this.history} as Focusable);
   }
   //resetDiary resets cookies and reloads the page;
   public resetDiary() {
@@ -187,7 +194,7 @@ export class DiaryComponent {
     this.history = [];
     this.macros = emptyMacro();
     this.records.records = [];
-    this.onFocusEvent.emit(['Diary Change', this.history]);
+    this.onFocusEvent.emit({name:'Diary Change', data: this.history} as Focusable);
   }
 
   public resetDiaryReload() {
@@ -218,5 +225,28 @@ export class DiaryComponent {
           this.addRecord(result);
         }
       });
+  }
+
+  public addComplex(){
+    this._dialog
+      .open(AddNutrientDialogComponent, {
+        data: {
+          source: this.source,
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        console.log('Result', result);
+        if (result) {
+          this.addRecord(result);
+        }
+      });
+  }
+
+  @HostListener('document:keydown.shift.a', ['$event'])
+  keyEvent(_event: KeyboardEvent)
+  {
+    console.log("Teste");
+    this.addComplex();
   }
 }

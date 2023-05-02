@@ -21,13 +21,16 @@ import { PersistComponent } from './persist/persist.component';
 import { CookieService } from 'ngx-cookie-service';
 import { DiaryComponent } from './diary/diary.component';
 import { NutrientBankComponent } from './nutrient-bank/nutrient-bank.component';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MacrosBarComponent } from './macros-bar/macros-bar.component';
 import { AddNutrientDialogComponent } from './nutrient-bank/add-nutrient-dialog/add-nutrient-dialog.component';
-import {MatStepperModule} from '@angular/material/stepper';
+import { MatStepperModule } from '@angular/material/stepper';
 import { HttpClientModule } from '@angular/common/http';
 import { MacroMatchDialogComponent } from './macro-match-dialog/macro-match-dialog.component';
 import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-complex-dialog.component';
+import { FactInspectComponent } from './fact-inspect/fact-inspect.component';
+import { ComplexDisplayComponent } from './complex-display/complex-display.component';
+import { FocusDirective } from './focus.directive';
 
 @NgModule({
   declarations: [
@@ -47,9 +50,12 @@ import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-
     AddNutrientDialogComponent,
     MacroMatchDialogComponent,
     ComposeComplexDialogComponent,
+    FactInspectComponent,
+    ComplexDisplayComponent,
+    FocusDirective,
   ],
   imports: [
-    
+
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
@@ -65,4 +71,4 @@ import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-
   providers: [CookieService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

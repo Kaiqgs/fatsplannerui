@@ -2,6 +2,7 @@
   <div class="form-group">
     <label for="foodName">Search food</label>
     <input
+      cdkFocusInitial
       #nameInput
       type="email"
       class="form-control"
@@ -23,7 +24,6 @@
               checked="true"
               (change)="deCheck(complexSelected)"
               id="defaultCheck1"
-              
             />
             <label class="form-check-label" for="defaultCheck1">
               {{ complexSelected.complex.name }}
@@ -76,4 +76,8 @@
       </button>
     </div>
   </ul>
+
+  <!-- <div> -->
+  <!--   <app-add-nutrient-dialog></app-add-nutrient-dialog> -->
+  <!-- </div> -->
 </div>

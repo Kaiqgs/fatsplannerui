@@ -90,8 +90,8 @@ export class NutrientBankComponent {
     if (nut.source === 'user') {
       const randomName = `bank:${Math.random().toString(36).substring(7)}`;
       this.nutrientBank.push(randomName);
-      this._cookieService.set('nutrientBank', JSON.stringify(this.nutrientBank));
-      this._cookieService.set(randomName, JSON.stringify(nut));
+      this._cookieService.set('nutrientBank', JSON.stringify(this.nutrientBank), 365);
+      this._cookieService.set(randomName, JSON.stringify(nut), 365);
       this.data.push(nut);
       console.log(`added ${randomName} to cookie`);
     }
@@ -100,7 +100,7 @@ export class NutrientBankComponent {
   ngOnInit(): void { }
 
   public focusData() {
-    this.onFocusEvent.emit(['Nutrient Bank', this.data]);
+    this.onFocusEvent.emit({name:'Nutrient Bank', data:this.data} as Focusable);
   }
 
   public databaseChanged(event: ComplexContainer) {

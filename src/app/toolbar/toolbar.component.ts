@@ -45,7 +45,7 @@ export class ToolbarComponent implements OnInit {
 
     this.form.valueChanges.subscribe({
       next: () => {
-        this._cs.set(this._ckName, JSON.stringify(this.form.value));
+        this._cs.set(this._ckName, JSON.stringify(this.form.value), 365);
 
         const kcal = getKcal(this.form.value.target);
         this.targetpct = getMacroPct(this.form.value.target, kcal);

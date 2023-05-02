@@ -21,12 +21,18 @@
       <app-recipes (onAddRecipe)="addRecipe($event)"></app-recipes>
       <app-persist></app-persist> -->
     </div>
-    <app-fat-facts
-      #facts
+    <app-fact-inspect 
+      #inspect
+      [focusedData] = "focusedData"
       style="width: 40vw"
-      [sourceFacts]="sourceFacts"
-      [planning]="planning"
       class="mx-3"
-    ></app-fat-facts>
+    ></app-fact-inspect>
+    <!-- <app-fat-facts -->
+    <!--   #facts -->
+    <!--   style="width: 40vw" -->
+    <!--   [sourceFacts]="sourceFacts" -->
+    <!--   [planning]="planning" -->
+    <!--   class="mx-3" -->
+    <!-- ></app-fat-facts> -->
   </div>
 </body>

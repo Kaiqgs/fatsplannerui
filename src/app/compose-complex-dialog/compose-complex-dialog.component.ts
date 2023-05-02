@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import fuzzysort from 'fuzzysort';
@@ -10,6 +10,7 @@ import {
   ComplexContainer,
   getNutrientIdentifier,
   ComplexReadContainer,
+  emptyNutrient,
 } from 'src/common/models/fatfacts.model';
 
 interface ComplexSelected {
@@ -38,6 +39,12 @@ export class ComposeComplexDialogComponent {
   @Input()
   topK = 10;
 
+  @Input()
+  asModal = true;
+
+  @Output()
+  onUpdate = new EventEmitter<ComplexNutrient>();
+
   indexes: { [code: string]: number };
   selected: ComplexSelected[] = [];
 
@@ -46,6 +53,7 @@ export class ComposeComplexDialogComponent {
     private _dialogRef: MatDialogRef<ComposeComplexDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    if (!data) data = {};
     this.source = data.source || [];
     this.indexes = Object.assign(
       {},
@@ -77,22 +85,27 @@ export class ComposeComplexDialogComponent {
   onCheck(obj: ComplexNutrient, event: Event) {
     let checked = (event.target as HTMLInputElement).checked;
     let dataId = getNutrientIdentifier(obj);
-    if (checked) {
-      this.selected.push({
-        code: dataId,
-        globalId: this.indexes[dataId],
-        localId: this.selected.length,
-        amount: obj.amount,
-        complex: obj,
-
-      } as ComplexSelected);
-    } else {
+    if (!checked) {
       console.warn("This should not trigger");
+      return;
     }
+    this.selected.push({
+      code: dataId,
+      globalId: this.indexes[dataId],
+      localId: this.selected.length,
+      amount: obj.amount,
+      complex: obj,
+    } as ComplexSelected);
+    this.onUpdate.emit(this.macros);
   }
 
   deCheck(obj: ComplexSelected) {
-    this.selected.splice(this.selected.indexOf(obj), 1);
+    let index = this.selected.indexOf(obj);
+    if (index == -1) {
+      return;
+    }
+    this.selected.splice(index, 1);
+    this.onUpdate.emit(this.macros);
   }
 
   closeDialog() {
@@ -101,35 +114,28 @@ export class ComposeComplexDialogComponent {
 
   get macros(): ComplexNutrient {
     //create Complex macronutrient from selected
-    let macro: ComplexNutrient = {
-      complex: [],
-      name: '',
-      meal: '',
-      source: '',
-      unit: '',
-      amount: 0,
-      sodium: 0,
-      fiber: 0,
-      carbs: 0,
-      prots: 0,
-      fats: 0,
-      kcal: 0,
-    };
-
-    let data: ComplexWeighted[] = this.selected.map((obj) => {
-      return [dataFromReference(obj.complex, obj.amount), 1];
-    });
+    let macro: ComplexNutrient = emptyNutrient();
+    let data: ComplexWeighted[] = this.selected.map((obj) =>
+      [dataFromReference(obj.complex, obj.amount), 1]
+    );
     macro.complex = data;
     return computeComplexMacro(macro, false);
   }
 
   createCloseDialog() {
-    this._dialogRef.close(this.macros);
+    if (this.asModal) {
+      this._dialogRef.close(this.macros);
+    }
   }
 
   onAmountChange(obj: ComplexSelected, event: Event) {
-    let amount = (event.target as HTMLInputElement).valueAsNumber;
+    const amount = (event.target as HTMLInputElement).valueAsNumber;
+    const diff = amount - obj.amount;
+    if (diff == 0) {
+      return;
+    }
     obj.amount = amount;
+    this.onUpdate.emit(this.macros);
   }
 
 
@@ -141,7 +147,4 @@ export class ComposeComplexDialogComponent {
       }
     }
   }
-
-
-
 }

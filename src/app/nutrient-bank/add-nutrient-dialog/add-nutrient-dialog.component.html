@@ -15,39 +15,34 @@ a form with the following fields:
         - fiber: number;
  -->
 
-<form>
+<form style="width: 50rem;">
   <mat-vertical-stepper>
+    <mat-step *ngIf="source.length" [stepControl]="complexFormGroup">
+      <form [formGroup]="complexFormGroup">
+        <ng-template matStepLabel>Complex</ng-template>
+        <app-compose-complex-dialog [source]="source" [asModal]="false"
+          (onUpdate)="onComplexUpdate($event)"></app-compose-complex-dialog>
+        <div>
+          <button class="btn btn-primary" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
     <mat-step [stepControl]="firstFormGroup" class="form-group">
       <form [formGroup]="firstFormGroup">
         <!-- Name -->
         <ng-template matStepLabel>Food</ng-template>
         <label for="name">Name</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="Banana example"
-          formControlName="name"
-          required
-        />
+        <input class="form-control" matInput placeholder="Banana example" formControlName="name" required />
         <!-- Unit -->
         <label for="unit">Unit</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="g"
-          formControlName="unit"
-          required
-        />
+        <input class="form-control" matInput placeholder="g" formControlName="unit" required />
         <!-- Amount -->
         <label for="amount">Amount</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="100"
-          formControlName="amount"
-          required
-        />
+        <input class="form-control" matInput placeholder="100" formControlName="amount" required />
         <div>
+
+
+          <button *ngIf="source.length" class="btn btn-primary" mat-button matStepperPrevious>Back</button>
           <button class="btn btn-primary" mat-button matStepperNext>Next</button>
         </div>
       </form>
@@ -58,31 +53,13 @@ a form with the following fields:
         <!-- Carbs -->
         <ng-template matStepLabel>Macros</ng-template>
         <label for="carbs">Carbs</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="20"
-          formControlName="carbs"
-          required
-        />
+        <input class="form-control" matInput placeholder="20" formControlName="carbs" required />
         <!-- Proteins -->
         <label for="prots">Proteins</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="1"
-          formControlName="prots"
-          required
-        />
+        <input class="form-control" matInput placeholder="1" formControlName="prots" required />
         <!-- Fats -->
         <label for="fats">Fats</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="0.5"
-          formControlName="fats"
-          required
-        />
+        <input class="form-control" matInput placeholder="0.5" formControlName="fats" required />
         <div>
           <button class="btn btn-primary" mat-button matStepperPrevious>Back</button>
           <button class="btn btn-primary" mat-button matStepperNext>Next</button>
@@ -95,20 +72,10 @@ a form with the following fields:
         <!-- Sodium -->
         <ng-template matStepLabel>Details</ng-template>
         <label for="sodium">Sodium</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="1000"
-          formControlName="sodium"
-        />
+        <input class="form-control" matInput placeholder="1000" formControlName="sodium" />
         <!-- Fiber -->
         <label for="fiber">Fiber</label>
-        <input
-          class="form-control"
-          matInput
-          placeholder="2"
-          formControlName="fiber"
-        />
+        <input class="form-control" matInput placeholder="2" formControlName="fiber" />
         <div>
           <button class="btn btn-primary" mat-button matStepperPrevious>Back</button>
           <button class="btn btn-primary" mat-button matStepperNext (click)="onSubmit()">Submit</button>

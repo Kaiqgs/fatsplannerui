@@ -9,7 +9,7 @@
     "@angular/material": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "bootstrap": "^5.2.2",
-    "bootstrap-icons": "^1.10.2",
+    "bootstrap-icons": "^1.10.3",
     "file-saver": "^2.0.5",
     "fuzzysort": "^2.0.4",
     "ngx-cookie-service": "^15.0.0",

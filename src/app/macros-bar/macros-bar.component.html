@@ -1,17 +1,16 @@
-<div class="input-group d-flex justify-content-around g-3 w-100 h-100" *ngFor="let macro of parsed">
-  <div class="d-flex flex-column fit-input">
+<div class="m-auto" *ngFor="let macro of parsed">
+  <div class="d-flex flex-column">
     <div class="d-flex justify-content-center">
-      <!-- If readOnly use span, else input -->
       <div *ngIf="readOnly; else input" class="input-group-text">
-        <span>{{ macro.value }}</span>
+        <span>{{ macro.value }}{{ macro.unit }} {{ macro.name }}</span>
       </div>
       <ng-template #input>
         <input type="number" class="form-control" placeholder="7" aria-label="days"
           aria-describedby="number-of-meals-in-day" min="1" [readonly]="readOnly" [value]="macro.value" />
+        <span class="input-group-text">{{ macro.name }}</span>
       </ng-template>
-      <span class="input-group-text">{{ macro.name }}</span>
     </div>
-    <div class="progress">
+    <div class="progress flex-shrink-1">
       <div class="progress-bar {{ macro.color }}" role="progressbar" aria-label="Example with label"
         [style.width]="pctify(macro.ratio)" aria-valuemin="0" aria-valuemax="100">
         {{ pctify(macro.ratio) }}

@@ -6,6 +6,7 @@ interface MacroDisplay {
   ratio: number,
   name: string,
   color: string
+  unit: string
 }
 
 @Component({
@@ -39,6 +40,7 @@ export class MacrosBarComponent {
   //colors
   public colors: string[] = ['bg-secondary', '', 'bg-success', 'bg-danger'];
   public names: string[] = ['kcal', 'carbs', 'prots', 'fats'];
+  public units: string[] = ['', 'g', 'g', 'g'];
 
   get parsed(): MacroDisplay[] {
     let map: MacroDisplay[] = [];
@@ -50,6 +52,7 @@ export class MacrosBarComponent {
         ratio: (this.percents as any)[name],
         name,
         color: this.colors[index],
+        unit: this.units[index],
       });
     });
     return map;
