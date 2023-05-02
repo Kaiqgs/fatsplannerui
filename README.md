@@ -1,6 +1,8 @@
 # Fatsplannerui
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.2.
+#TODO: fix bug where focused input shift+a stills open another modal;
+#TODO: fix compose-complex bug where last input does not correspond to last fuzzy search results;
+ 
 
 ## Development server
 

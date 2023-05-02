@@ -18,6 +18,9 @@ export class ComplexDisplayComponent {
 
   identifier: string = this.generateUUID();
 
+  @Input()
+  defaultCollapsed: boolean = true;
+
   generateUUID() { // Public Domain/MIT
     var d = new Date().getTime();//Timestamp
     var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported

@@ -1,3 +1,7 @@
+<h3>Fact Inspect</h3>
 <div class="d-flex flex-column gap-3 overflow-auto">
-    <app-complex-display *ngFor="let fact of focusedData?.data || []" [complex]="fact"></app-complex-display>
+    <!-- <app-complex-display *ngFor="let fact of focusedData?.data || []" [complex]="fact"></app-complex-display> -->
+
+    <app-complex-display [complex]="dataInDay" [defaultCollapsed]="false"></app-complex-display>
+
 </div>
