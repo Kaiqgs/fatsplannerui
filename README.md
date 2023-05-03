@@ -1,7 +1,7 @@
 # Fatsplannerui
 
-#TODO: fix bug where focused input shift+a stills open another modal;
-#TODO: fix compose-complex bug where last input does not correspond to last fuzzy search results;
+- [X] fix bug where focused input shift+a stills open another modal;
+- [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
  
 
 ## Development server

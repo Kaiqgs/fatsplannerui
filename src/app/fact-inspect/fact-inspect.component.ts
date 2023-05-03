@@ -18,7 +18,7 @@ export class FactInspectComponent {
   get dataInDay(): ComplexNutrient {
     let nutrient = emptyNutrient();
     nutrient.complex = this.focusedData?.data.map((row) => [row, 1]) ?? [];
-    nutrient = computeComplexMacro(nutrient);
+    nutrient = computeComplexMacro(nutrient, false);
     nutrient.name = "ate in a day";
     return nutrient;
   }

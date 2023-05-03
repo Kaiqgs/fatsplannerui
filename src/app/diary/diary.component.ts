@@ -49,6 +49,7 @@ export class DiaryComponent {
   mealOptions: string[] = ['Other', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
   macros: Macronutrients = emptyMacro();
   records: RecordHistory;
+  private _isDialogOpen = false;
 
   @Input()
   public source: ComplexReadContainer = [];
@@ -212,6 +213,7 @@ export class DiaryComponent {
   }
 
   public showAddComplex() {
+    this._isDialogOpen = true;
     this._dialog
       .open(ComposeComplexDialogComponent, {
         data: {
@@ -224,10 +226,12 @@ export class DiaryComponent {
         if (result) {
           this.addRecord(result);
         }
+        this._isDialogOpen = false;
       });
   }
 
   public addComplex(){
+    this._isDialogOpen = true;
     this._dialog
       .open(AddNutrientDialogComponent, {
         data: {
@@ -240,13 +244,15 @@ export class DiaryComponent {
         if (result) {
           this.addRecord(result);
         }
+        this._isDialogOpen = false;
       });
   }
 
   @HostListener('document:keydown.shift.a', ['$event'])
   keyEvent(_event: KeyboardEvent)
   {
-    console.log("Teste");
-    this.addComplex();
+    if(!this._isDialogOpen){
+      this.addComplex();
+    }
   }
 }
