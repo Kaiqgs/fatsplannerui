@@ -29,7 +29,6 @@ import { MacroMatchDialogComponent } from './macro-match-dialog/macro-match-dial
 import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-complex-dialog.component';
 import { FactInspectComponent } from './fact-inspect/fact-inspect.component';
 import { ComplexDisplayComponent } from './complex-display/complex-display.component';
-import { FocusDirective } from './focus.directive';
 
 @NgModule({
   declarations: [
@@ -51,7 +50,6 @@ import { FocusDirective } from './focus.directive';
     ComposeComplexDialogComponent,
     FactInspectComponent,
     ComplexDisplayComponent,
-    FocusDirective,
   ],
   imports: [
 

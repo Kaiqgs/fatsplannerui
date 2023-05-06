@@ -3,6 +3,8 @@
 - [X] fix bug where focused input shift+a stills open another modal;
 - [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
 - [ ] #1 as dev: compress and split cache for reliable storage;
+  - [ ] deprecated due to Indexed DB
+- [ ] #1 as a dev: use reliable indexedDB for local storage
  
 
 ## Development server
