@@ -1,6 +1,5 @@
 import {
   ComplexContainer,
-  LabeledNutrient,
 } from 'src/common/models/fatfacts.model';
 import { HttpClient } from '@angular/common/http';
 

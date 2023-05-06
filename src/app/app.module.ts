@@ -18,6 +18,7 @@ import { AddDialogComponent } from './recipes/add-dialog/add-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { OverviewComponent } from './overview/overview.component';
 import { PersistComponent } from './persist/persist.component';
+import { CookieService } from 'ngx-cookie-service';
 import { DiaryComponent } from './diary/diary.component';
 import { NutrientBankComponent } from './nutrient-bank/nutrient-bank.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -65,6 +66,7 @@ import { ComplexDisplayComponent } from './complex-display/complex-display.compo
     ToastrModule.forRoot(),
     CommonModule
   ],
+  providers: [CookieService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

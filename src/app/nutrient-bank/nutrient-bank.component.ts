@@ -2,11 +2,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import {
   ComplexContainer,
   ComplexNutrient,
-  ComplexReadContainer,
   computeComplexMacro,
   emptyNutrient,
   getNutrientHash,
-  getNutrientIdentifier,
   LabeledNutrient,
 } from 'src/common/models/fatfacts.model';
 import { LocalBankAsset } from 'src/app/nutrient-bank/nutrient-bank.taco';
@@ -15,7 +13,6 @@ import { AddNutrientDialogComponent } from './add-nutrient-dialog/add-nutrient-d
 import { MatDialog } from '@angular/material/dialog';
 import { getKcal } from 'src/common/models/thermodynamics';
 import { HttpClient } from '@angular/common/http';
-import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
 import { DbService } from '../db.service';
 
 interface BankSchema {

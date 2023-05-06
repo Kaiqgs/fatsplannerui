@@ -14,8 +14,6 @@ import {
   macroFromGroup,
   Macronutrients,
   emptyMacro,
-  computeComplexMacro,
-  emptyNutrient,
 } from 'src/common/models/fatfacts.model';
 import { Focusable } from '../app.component';
 
@@ -27,7 +25,6 @@ import { PlanningDetails } from 'src/common/models/planning.model';
 import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
 import { AddNutrientDialogComponent } from '../nutrient-bank/add-nutrient-dialog/add-nutrient-dialog.component';
 import { DbService } from '../db.service';
 
@@ -125,15 +122,6 @@ export class DiaryComponent {
     return this._records.map((record) => record.record);
   }
 
-  public get unitRecord() {
-    let nut = emptyNutrient();
-    nut.complex = this.records.map((record) => [record, 1]);
-    nut = computeComplexMacro(nut, false);
-    nut.name = "Ate in a day";
-    return nut
-  }
-
-  //onKeyDown try add record if enter is pressed;
   public searchBoxKeyDown(event: KeyboardEvent) {
     const options = fuzzysort.go(
       (event.target as HTMLInputElement).value,
@@ -150,7 +138,6 @@ export class DiaryComponent {
     console.log(event.option);
   }
 
-  //anyInputKeyDown try add record if enter is pressed;
   public anyInputKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       const selected = this.objOptions[0];
