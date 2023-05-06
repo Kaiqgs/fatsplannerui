@@ -15,7 +15,7 @@ a form with the following fields:
         - fiber: number;
  -->
 
-<form style="width: 50rem;">
+<form [style]="sizeLarge ? 'width: 50rem;' : ''">
   <mat-vertical-stepper>
     <mat-step *ngIf="source.length" [stepControl]="complexFormGroup">
       <form [formGroup]="complexFormGroup">

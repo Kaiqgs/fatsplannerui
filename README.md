@@ -2,6 +2,7 @@
 
 - [X] fix bug where focused input shift+a stills open another modal;
 - [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
+- [ ] #1 as dev: compress and split cache for reliable storage;
  
 
 ## Development server

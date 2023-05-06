@@ -3,17 +3,26 @@ import {
   ComplexContainer,
   ComplexNutrient,
   ComplexReadContainer,
+  computeComplexMacro,
+  emptyNutrient,
+  getNutrientHash,
   getNutrientIdentifier,
   LabeledNutrient,
 } from 'src/common/models/fatfacts.model';
 import { LocalBankAsset } from 'src/app/nutrient-bank/nutrient-bank.taco';
 import { Focusable } from '../app.component';
-import { CookieService } from 'ngx-cookie-service';
 import { AddNutrientDialogComponent } from './add-nutrient-dialog/add-nutrient-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { getKcal } from 'src/common/models/thermodynamics';
 import { HttpClient } from '@angular/common/http';
 import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
+import { DbService } from '../db.service';
+
+interface BankSchema {
+  hash: string,
+  record: ComplexNutrient,
+  datetime: Date,
+}
 
 @Component({
   selector: 'app-nutrient-bank',
@@ -27,80 +36,84 @@ export class NutrientBankComponent {
   @Output()
   public databaseChange = new EventEmitter<ComplexContainer>();
 
-  public data: ComplexContainer = [];
-  private nutrientBank: string[] = [];
+  public data: ComplexNutrient[] = [];
+  private _nutBank: BankSchema[] = [];
+
+  focusUserAdded: boolean = true;
 
   constructor(
-    private _cookieService: CookieService,
     private _dialog: MatDialog,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _db: DbService
   ) {
     console.log(this.data);
     new LocalBankAsset()
       .readData(this._http)
       .then((data) => {
-        data.forEach((nutrient) => {
-          this._pushNewToBank(nutrient);
-        });
-        this._readFromCookies();
+        this.data = data;
+        this._readUserData();
         this.databaseChanged(this.data);
       }).catch((_) => {
-        this._readFromCookies();
+        this._readUserData();
         this.databaseChanged(this.data);
       });
   }
 
-  private _pushNewToBank(nutrient: ComplexNutrient) {
-    const nutrId = getNutrientIdentifier(nutrient);
-    const notPresent = !this.data.find((item) => getNutrientIdentifier(item) === nutrId);
-    if (notPresent) {
-      this.data.push(nutrient);
-    }
-    else {
-      console.log('duplicate found');
-    }
+  private _readUserData() {
+    this._db.table('nutrientBank').toArray().then((bankRecord: BankSchema[]) => {
+      bankRecord.forEach((nutrient) => {
+        this._nutBank.push(nutrient);
+        this.data.push(nutrient.record);
+      });
+    });
   }
 
-  private _readFromCookies() {
-    if (this._cookieService.check('nutrientBank')) {
-      this.nutrientBank = JSON.parse(this._cookieService.get('nutrientBank'));
-      this.nutrientBank.forEach((cookieName) => {
-        if (this._cookieService.check(cookieName)) {
-          const parsedNutrient = JSON.parse(this._cookieService.get(cookieName));
-          this._pushNewToBank(parsedNutrient);
-        }
-      }
-      );
-    }
-  }
-
-  private _createNewNutrient(result: ComplexNutrient | LabeledNutrient | undefined | null) {
+  private async _createNewNutrient(result: ComplexNutrient | LabeledNutrient | undefined | null) {
     if (result !== undefined && result !== null) {
-      const endResult = result as ComplexNutrient;
-      endResult.meal = 'any';
-      endResult.source = 'user';
-      endResult.kcal = getKcal(endResult);
-      endResult.complex = endResult.complex || [];
-      this._writeToCookies(endResult);
+      const nutrient = result as ComplexNutrient;
+      nutrient.meal = 'any';
+      nutrient.source = 'user';
+      nutrient.kcal = getKcal(nutrient);
+      nutrient.complex = nutrient.complex || [];
+
+      const hash = await getNutrientHash(nutrient);
+      const record = {
+        hash,
+        record: nutrient,
+        datetime: new Date()
+      } as BankSchema;
+
+      const exists = await this._db.table('nutrientBank').get(hash);
+      if (exists !== undefined) return;
+
+      await this._db.table('nutrientBank').put(record, hash);
+      this.data.push(nutrient);
+      this._nutBank.push(record);
       this.exportDatabase();
       this.databaseChanged(this.data);
+      if (this.focusUserAdded) this.focusData("NewNutrientBank");
     }
   }
-  private _writeToCookies(nut: ComplexNutrient) {
-    if (nut.source === 'user') {
-      const randomName = `bank:${Math.random().toString(36).substring(7)}`;
-      this.nutrientBank.push(randomName);
-      this._cookieService.set('nutrientBank', JSON.stringify(this.nutrientBank), 365);
-      this._cookieService.set(randomName, JSON.stringify(nut), 365);
-      this.data.push(nut);
-      console.log(`added ${randomName} to cookie`);
+
+  get unitNutrient(): ComplexNutrient {
+    let nutrient = emptyNutrient();
+    if (this.focusUserAdded) {
+      nutrient.complex = this._nutBank.map((nutrient) => [nutrient.record, 1]);
     }
+    else {
+      nutrient.complex = this.data.map((nutrient) => [nutrient, 1]);
+    }
+    console.log("UnitNutrient", nutrient);
+    nutrient = computeComplexMacro(nutrient, false);
+    nutrient.name = 'User added';
+    console.log("UnitNutrient", nutrient);
+    return nutrient;
   }
 
   ngOnInit(): void { }
 
-  public focusData() {
-    this.onFocusEvent.emit({name:'Nutrient Bank', data:this.data} as Focusable);
+  public focusData(name: string = "NutrientBank") {
+    this.onFocusEvent.emit({ name, data: this._nutBank.map((n) => n.record) } as Focusable);
   }
 
   public databaseChanged(event: ComplexContainer) {
@@ -122,17 +135,20 @@ export class NutrientBankComponent {
 
 
   public showNewComplexNutrient() {
-    this._dialog.open(ComposeComplexDialogComponent, {
-      width: '500px',
-      data: {
-        source: this.data as ComplexReadContainer,
-      },
-    })
+    this._dialog
+      .open(AddNutrientDialogComponent, {
+        width: '50rem',
+        data: {
+          source: this.data,
+        },
+      })
       .afterClosed()
-      .subscribe((result: ComplexNutrient) => {
-        this._createNewNutrient(result);
+      .subscribe((result) => {
+        console.log('Result', result);
+        if (result) {
+          this._createNewNutrient(result);
+        }
       });
-
   }
 
   //exports `data` to JSON file;
@@ -151,8 +167,7 @@ export class NutrientBankComponent {
 
   //erase cookies and reload page;
   public resetDatabase() {
-    this.nutrientBank.forEach((cookieName) => this._cookieService.delete(cookieName));
-    this._cookieService.delete('nutrientBank');
+    this._db.table('nutrientBank').clear();
     window.location.reload();
   }
 

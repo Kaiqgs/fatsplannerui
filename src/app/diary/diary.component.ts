@@ -6,7 +6,6 @@ import {
   ViewChild,
   HostListener,
 } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import {
   ComplexNutrient,
   dataFromReference,
@@ -14,8 +13,9 @@ import {
   ComplexReadContainer,
   macroFromGroup,
   Macronutrients,
-  MacroContainer,
   emptyMacro,
+  computeComplexMacro,
+  emptyNutrient,
 } from 'src/common/models/fatfacts.model';
 import { Focusable } from '../app.component';
 
@@ -29,12 +29,12 @@ import {
 } from '@angular/material/autocomplete';
 import { ComposeComplexDialogComponent } from '../compose-complex-dialog/compose-complex-dialog.component';
 import { AddNutrientDialogComponent } from '../nutrient-bank/add-nutrient-dialog/add-nutrient-dialog.component';
+import { DbService } from '../db.service';
 
-type ConsumptionHistory = { [key: string]: Array<Date> };
-
-interface RecordHistory {
-  date: Date;
-  records: string[];
+interface DiarySchema {
+  id: number | undefined,
+  record: ComplexNutrient,
+  datetime: Date,
 }
 
 @Component({
@@ -43,13 +43,11 @@ interface RecordHistory {
   styleUrls: ['./diary.component.scss'],
 })
 export class DiaryComponent {
-  history: ComplexContainer = [];
-  consumption: ConsumptionHistory = {};
   objOptions: ComplexContainer = [];
   mealOptions: string[] = ['Other', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
   macros: Macronutrients = emptyMacro();
-  records: RecordHistory;
   private _isDialogOpen = false;
+  private _records: DiarySchema[] = [];
 
   @Input()
   public source: ComplexReadContainer = [];
@@ -66,51 +64,39 @@ export class DiaryComponent {
   public form!: FormGroup;
 
   constructor(
-    private _cookieService: CookieService,
     private _fb: FormBuilder,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private _db: DbService
   ) {
-    this.records = {
-      date: new Date(),
-      records: [],
-    };
-    this._readCookies();
     this._generateForm();
-    this.macros = macroFromGroup(this.history);
-    this._handleTodayChanged();
     if (this.planning) {
       this.macros.kcal = this.planning.target.kcal - this.macros.kcal;
     }
-  }
+    // this._db.table('diary').toArray().then((data: DiarySchema[]) => {
+    //   console.log("All data", data);
+    // });
 
-  ngOnInit(): void {
-    this.onFocus();
-  }
-
-  private _handleTodayChanged() {
-    if (this.records.date.getDate() !== new Date().getDate()) {
-      //check if history is valid;
-      //if valid store on cookies
-      let metack = this._cookieService.get('diaryMetaHistory');
-      let meta: MacroContainer = metack ? JSON.parse(metack) : [];
-      meta.push(this.macros);
-      this._cookieService.set('diaryMetaHistory', JSON.stringify(meta), 365);
-      this.resetDiary();
-    }
-  }
-
-  private _readCookies() {
-    if (this._cookieService.check('diaryHistory')) {
-      this.records = JSON.parse(this._cookieService.get('diaryHistory'));
-      this.records.date = new Date(this.records.date);
-    }
-    this.records.records.forEach((code) => {
-      let history = this._cookieService.get(code);
-      if (history) {
-        this.history.push(JSON.parse(history));
-      }
+    this.getToday().then((data) => {
+      this._records = data;
+      this.macros = macroFromGroup(this.records);
+      console.log("Macro", this.macros);
+      console.log("Today's data", data);
+      console.log("Today's records", this.records);
+      this.focusDiary("InitialDiary");
     });
   }
+
+  ngOnInit(): void { }
+
+  async getToday(): Promise<DiarySchema[]> {
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+    const todaysData = await this._db.table('diary').where('datetime').between(todayMidnight, todayEnd).toArray();
+    return todaysData;
+  };
+
 
   get missingMacros() {
     const target = this.planning?.target;
@@ -133,6 +119,18 @@ export class DiaryComponent {
       amount: [''],
       meal: ['Other'],
     });
+  }
+
+  public get records(): ComplexNutrient[] {
+    return this._records.map((record) => record.record);
+  }
+
+  public get unitRecord() {
+    let nut = emptyNutrient();
+    nut.complex = this.records.map((record) => [record, 1]);
+    nut = computeComplexMacro(nut, false);
+    nut.name = "Ate in a day";
+    return nut
   }
 
   //onKeyDown try add record if enter is pressed;
@@ -169,38 +167,31 @@ export class DiaryComponent {
 
   //Adds one record to the history;
   public addRecord(record: ComplexNutrient) {
-    const randomName = `diary:${Math.random().toString(36).substring(7)}`;
-    this.records.records.push(randomName);
-    this._cookieService.set(randomName, JSON.stringify(record), 365);
-    this.history.push(record);
-    this.macros = macroFromGroup(this.history);
-    this._cookieService.set('diaryHistory', JSON.stringify(this.records), 365);
-    // this.consumption[record.name] = this.consumption[record.name] || [];
-    // this.consumption[record.name].push(new Date());
-    // //set cookie for consumption history;
-    // this._cookieService.set(
-    //   'diaryConsumptionHistory',
-    //   JSON.stringify(this.consumption),
-    //  365
-    // );
+
+    const now = new Date();
+    const diaryItem = {
+      record: record,
+      datetime: now,
+    } as DiarySchema;
+
+    this._records.push(diaryItem)
+    this._db.table('diary').put(diaryItem);
+    this.macros = macroFromGroup(this.records);
+    this.focusDiary('NewDiary');
   }
 
-  public onFocus() {
-    this.onFocusEvent.emit({name:'Diary', data:this.history} as Focusable);
+  public focusDiary(name: string = 'Diary') {
+    this.onFocusEvent.emit({ name, data: this.records } as Focusable);
   }
-  //resetDiary resets cookies and reloads the page;
+
   public resetDiary() {
-    this.records.records.forEach((code) => { this._cookieService.delete(code); });
-    this._cookieService.delete('diaryHistory');
-    this.history = [];
-    this.macros = emptyMacro();
-    this.records.records = [];
-    this.onFocusEvent.emit({name:'Diary Change', data: this.history} as Focusable);
-  }
-
-  public resetDiaryReload() {
-    this.resetDiary();
-    // window.location.reload();
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+    this._db.table('diary').where('datetime').above(todayMidnight).delete().then(() => {
+      this._records = [];
+      this.macros = emptyMacro();
+      this.focusDiary('ResetDiary');
+    });
   }
 
   public matchTarget(target: Macronutrients) {
@@ -212,28 +203,11 @@ export class DiaryComponent {
     });
   }
 
-  public showAddComplex() {
-    this._isDialogOpen = true;
-    this._dialog
-      .open(ComposeComplexDialogComponent, {
-        data: {
-          source: this.source,
-        },
-      })
-      .afterClosed()
-      .subscribe((result) => {
-        console.log('Result', result);
-        if (result) {
-          this.addRecord(result);
-        }
-        this._isDialogOpen = false;
-      });
-  }
-
-  public addComplex(){
+  public addComplex() {
     this._isDialogOpen = true;
     this._dialog
       .open(AddNutrientDialogComponent, {
+        width: '50rem',
         data: {
           source: this.source,
         },
@@ -249,9 +223,8 @@ export class DiaryComponent {
   }
 
   @HostListener('document:keydown.shift.a', ['$event'])
-  keyEvent(_event: KeyboardEvent)
-  {
-    if(!this._isDialogOpen){
+  keyEvent(_event: KeyboardEvent) {
+    if (!this._isDialogOpen) {
       this.addComplex();
     }
   }

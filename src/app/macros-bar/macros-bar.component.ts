@@ -37,7 +37,7 @@ export class MacrosBarComponent {
     return macroRatio(this.macros);
   }
 
-  //colors
+  @Input()
   public colors: string[] = ['bg-secondary', '', 'bg-success', 'bg-danger'];
   public names: string[] = ['kcal', 'carbs', 'prots', 'fats'];
   public units: string[] = ['', 'g', 'g', 'g'];

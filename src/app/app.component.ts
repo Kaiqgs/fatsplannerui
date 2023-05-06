@@ -1,7 +1,8 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {  Component, ElementRef, ViewChild } from '@angular/core';
 import {
   ComplexContainer,
   ComplexContainer2D,
+  ComplexNutrient,
 } from 'src/common/models/fatfacts.model';
 import { PlanningDetails } from 'src/common/models/planning.model';
 import { FatFactsComponent } from './fat-facts/fat-facts.component';
@@ -9,7 +10,7 @@ import { AddRecipeCallback } from './recipes/recipes.component';
 
 export interface Focusable {
   name: string;
-  data: ComplexContainer;
+  data: ComplexNutrient[];
 
   handleDelete(id: number): void;
   handleEdit(): void;
@@ -54,7 +55,7 @@ export class AppComponent {
       return;
     }
     this.focusedData = event;
-    this.onChangeSource([event.data]);
+    // this.onChangeSource(event.data);
   }
 
   //onNewDatabase takes fatsecret data and emits it to the fatfacts component

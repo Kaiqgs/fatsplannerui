@@ -1,7 +1,7 @@
-import { Component, HostListener, Inject } from '@angular/core';
+import { Component, HostListener, Inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ComplexNutrient, ComplexReadContainer, emptyNutrient, Macronutrients } from 'src/common/models/fatfacts.model';
+import { coerceComplexNutrient, ComplexNutrient, ComplexReadContainer, emptyNutrient, Macronutrients } from 'src/common/models/fatfacts.model';
 import { getKcal } from 'src/common/models/thermodynamics';
 
 @Component({
@@ -16,6 +16,9 @@ export class AddNutrientDialogComponent {
   complexFormGroup: FormGroup;
   source: ComplexReadContainer;
 
+  @Input()
+  public sizeLarge = false;
+
   private _complexNutrient: ComplexNutrient = emptyNutrient();
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -23,6 +26,7 @@ export class AddNutrientDialogComponent {
     private _dialogRef: MatDialogRef<AddNutrientDialogComponent>
   ) {
     if (!data) data = {};
+    this.sizeLarge = data.sizeLarge || false;
     this.source = data.source || [];
     this.firstFormGroup = this._formBuilder.group({
       name: [''],
@@ -50,9 +54,9 @@ export class AddNutrientDialogComponent {
 
   get macros(): Macronutrients {
     let macros = {
-      carbs: this.secondFormGroup.value.carbs as number,
-      prots: this.secondFormGroup.value.prots as number,
-      fats: this.secondFormGroup.value.fats as number,
+      carbs: parseFloat(this.secondFormGroup.value.carbs),
+      prots: parseFloat(this.secondFormGroup.value.prots),
+      fats: parseFloat(this.secondFormGroup.value.fats),
       kcal: -1,
     };
     macros.kcal = getKcal(macros);
@@ -60,17 +64,18 @@ export class AddNutrientDialogComponent {
   }
 
   get complexNutrient(): ComplexNutrient {
-    return {
-      name: this.firstFormGroup.value.name as string,
-      unit: this.firstFormGroup.value.unit as string,
-      amount: this.firstFormGroup.value.amount as number,
+    const data = {
+      name: this.firstFormGroup.value.name,
+      unit: this.firstFormGroup.value.unit,
+      amount: this.firstFormGroup.value.amount,
       ...this.macros,
       meal: "Other",
       source: "User",
-      sodium: this.thirdFormGroup.value.sodium as number,
-      fiber: this.thirdFormGroup.value.fiber as number,
+      sodium: this.thirdFormGroup.value.sodium,
+      fiber: this.thirdFormGroup.value.fiber,
       complex: this._complexNutrient.complex,
     };
+    return coerceComplexNutrient(data);
   }
 
   onComplexUpdate(nutrient: ComplexNutrient) {

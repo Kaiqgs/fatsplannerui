@@ -42,6 +42,22 @@ export enum MacroCalories {
   fats = 9,
 }
 
+export function generateUUID() { // Public Domain/MIT
+  var d = new Date().getTime();//Timestamp
+  var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  return 'infoCollapse' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16;//random number between 0 and 16
+    if (d > 0) {//Use timestamp until depleted
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {//Use microseconds since page-load if supported
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
 export interface LabeledNutrient extends Macronutrients {
   name: string;
   meal: string; // this is relational to meal table;
@@ -51,10 +67,26 @@ export interface LabeledNutrient extends Macronutrients {
   sodium: number;
   fiber: number;
 }
-
-//compute FatSecretData identifier string;
+function hashCode(str: string) {
+  let hash = 0;
+  for (let i = 0, len = str.length; i < len; i++) {
+    let chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
 export function getNutrientIdentifier(data: ComplexNutrient): string {
-  return `${data.name}-${data.meal}-${data.source}-${data.unit}`;
+  const str = `${data.name}-${data.meal}-${data.source}-${data.unit}`;
+  // const hasharray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  // btoa(String.fromCharCode(...new Uint8Array(hasharray)));
+  return hashCode(str).toString(16);
+}
+
+export async function getNutrientHash(data: ComplexNutrient): Promise<string> {
+  const str = JSON.stringify(data);
+  const hasharray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return btoa(String.fromCharCode(...new Uint8Array(hasharray)));
 }
 
 export type ComplexWeighted = [ComplexNutrient, number];
@@ -139,6 +171,26 @@ export function macroRatio(data: Macronutrients) {
   ratio.fats = data.fats ? (data.fats * MacroCalories.fats) / data.kcal : 0;
   return ratio;
 }
+
+export function coerceComplexNutrient(data: ComplexNutrient): ComplexNutrient {
+  //coerces to correct type
+  const coercedData: ComplexNutrient = {
+    name: data.name.toString(),
+    kcal: Number(data.kcal),
+    carbs: Number(data.carbs),
+    prots: Number(data.prots),
+    fats: Number(data.fats),
+    sodium: Number(data.sodium),
+    fiber: Number(data.fiber),
+    amount: Number(data.amount),
+    source: data.source.toString(),  
+    meal: data.meal.toString(),
+    unit: data.unit.toString(),
+    complex: data.complex,
+  };
+  return coercedData;
+
+};
 
 export function macroRatioDiff(
   macro: Macronutrients,
@@ -241,10 +293,10 @@ export class FatFacts {
   }
 }
 
-export interface FatFactsContainer extends Array<FatFacts> {}
-export interface ComplexContainer extends Array<ComplexNutrient> {}
+export interface FatFactsContainer extends Array<FatFacts> { }
+export interface ComplexContainer extends Array<ComplexNutrient> { }
 export interface ComplexReadContainer
-  extends ReadonlyArray<ComplexNutrient> {}
+  extends ReadonlyArray<ComplexNutrient> { }
 export interface ComplexContainer2D
-  extends Array<ComplexContainer> {}
-export interface MacroContainer extends Array<Macronutrients> {}
+  extends Array<ComplexContainer> { }
+export interface MacroContainer extends Array<Macronutrients> { }
