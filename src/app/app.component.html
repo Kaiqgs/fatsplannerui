@@ -24,6 +24,8 @@
     <app-fact-inspect 
       #inspect
       [focusedData] = "focusedData"
+      (delete)="deleteFocused($event[0], $event[1])"
+      (edit)="editFocused($event[0], $event[1])"
       style="width: 40vw"
       class="mx-3"
     ></app-fact-inspect>

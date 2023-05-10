@@ -2,9 +2,17 @@
 
 - [X] fix bug where focused input shift+a stills open another modal;
 - [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
-- [ ] #1 as dev: compress and split cache for reliable storage;
-  - [ ] deprecated due to Indexed DB
-- [ ] #1 as a dev: use reliable indexedDB for local storage
+- [X] #1 as dev: compress and split cache for reliable storage;
+  - [X] deprecated due to Indexed DB
+- [ ] fix bug where shift+s submits addNutrient form;
+- [X] #1 as a dev: use reliable indexedDB for local storage
+- [ ] #2 as a user: use delete button
+  - [ ] .a delete for diary
+  - [ ] .b delete for nutrientBank
+- [ ] #3 as a user: use edit button
+  - [ ] .a edit for diary
+  - [ ] .b edit for nutrientBank
+
  
 
 ## Development server

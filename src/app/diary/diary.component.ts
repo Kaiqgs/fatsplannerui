@@ -164,11 +164,23 @@ export class DiaryComponent {
     this._records.push(diaryItem)
     this._db.table('diary').put(diaryItem);
     this.macros = macroFromGroup(this.records);
-    this.focusDiary('NewDiary');
+    this.focusDiary(`DiaryAdd${this._records.length}`);
   }
 
   public focusDiary(name: string = 'Diary') {
-    this.onFocusEvent.emit({ name, data: this.records } as Focusable);
+    this.onFocusEvent.emit({
+      name, data: this.records, handleEdit: (index: number, level: number) => {
+        
+      },
+      handleDelete: (index: number, level: number) => {
+        if (level != 0) {
+          throw new Error('Not implemented');
+        }
+        const record = this._records.splice(index, 1);
+        this._db.table('diary').delete(record[0].id as number);
+        this.focusDiary(`DiaryDelete${this._records.length}`);
+      }
+    } as Focusable);
   }
 
   public resetDiary() {

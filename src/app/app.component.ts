@@ -11,13 +11,9 @@ import { AddRecipeCallback } from './recipes/recipes.component';
 export interface Focusable {
   name: string;
   data: ComplexNutrient[];
-
-  handleDelete(id: number): void;
-  handleEdit(): void;
+  handleDelete(index: number, level: number): void;
+  handleEdit(index: number, level: number): void;
 }
-
-
-
 
 @Component({
   selector: 'app-root',
@@ -56,6 +52,14 @@ export class AppComponent {
     }
     this.focusedData = event;
     // this.onChangeSource(event.data);
+  }
+
+  deleteFocused(index: number, level: number) {
+    this.focusedData?.handleDelete(index, level);
+  }
+
+  editFocused(index: number, level: number) {
+    this.focusedData?.handleEdit(index, level);
   }
 
   //onNewDatabase takes fatsecret data and emits it to the fatfacts component
