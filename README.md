@@ -12,6 +12,7 @@
 - [ ] #3 as a user: use edit button
   - [ ] .a edit for diary
   - [ ] .b edit for nutrientBank
+- [ ] #4 as a user: see sodium/fiber in macro-display
 
  
 
