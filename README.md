@@ -16,9 +16,12 @@
   - [ ] .a edit for diary
   - [ ] .b edit for nutrientBank
 - [X] #4 as a user: see sodium/fiber in macro-display
-  - [ ] .a fix bug where secondary does not space content around
+  - [X] .a fix bug where secondary does not space content around
+  - [X] .b fix bug where `fiber` was not renamed to `fibers`
 - [ ] #5 as a dev: hash ComplexNutrients, update hash in a backward propagation manner;
 - [ ] #6 as a dev: export target to use macros-bar & secondary nutrient;
+- [ ] #7 as a user: go back and forth in diary dates;
+- [X] #8 as a user: see different favicons to avoid boredom;
 
 
  

@@ -1,4 +1,4 @@
-import {  Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
   ComplexContainer,
   ComplexContainer2D,
@@ -26,7 +26,19 @@ export class AppComponent {
   planning!: PlanningDetails;
   sourceFacts: ComplexContainer2D = [];
   database: ComplexContainer = [];
-  constructor() { }
+  constructor() {
+    const imgcount = 13 - 1;
+    let link: HTMLLinkElement = document.createElement("link");
+    let oldLink = document.getElementById('dynamic-favicon');
+    link.id = 'dynamic-favicon';
+    link.rel = 'icon';
+    link.href = `assets/${Math.round(Math.random() * imgcount) + 1}.png`;
+    if (oldLink) {
+      document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+  }
+
 
   @ViewChild('facts')
   facts!: ElementRef<FatFactsComponent>;
