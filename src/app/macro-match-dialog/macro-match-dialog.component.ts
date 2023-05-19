@@ -85,7 +85,7 @@ export class MacroMatchDialogComponent {
         unit: '',
         amount: 0,
         sodium: 0,
-        fiber: 0,
+        fibers: 0,
         carbs: 0,
         prots: 0,
         fats: 0,

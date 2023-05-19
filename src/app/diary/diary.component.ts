@@ -13,7 +13,8 @@ import {
   ComplexReadContainer,
   macroFromGroup,
   Macronutrients,
-  emptyMacro,
+  emptyNutrient,
+  complexFromGroup,
 } from 'src/common/models/fatfacts.model';
 import { Focusable } from '../app.component';
 
@@ -42,7 +43,7 @@ interface DiarySchema {
 export class DiaryComponent {
   objOptions: ComplexContainer = [];
   mealOptions: string[] = ['Other', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
-  macros: Macronutrients = emptyMacro();
+  macros: ComplexNutrient = emptyNutrient();
   private _isDialogOpen = false;
   private _records: DiarySchema[] = [];
 
@@ -75,7 +76,7 @@ export class DiaryComponent {
 
     this.getToday().then((data) => {
       this._records = data;
-      this.macros = macroFromGroup(this.records);
+      this.macros = complexFromGroup(this.records);
       console.log("Macro", this.macros);
       console.log("Today's data", data);
       console.log("Today's records", this.records);
@@ -163,7 +164,7 @@ export class DiaryComponent {
 
     this._records.push(diaryItem)
     this._db.table('diary').put(diaryItem);
-    this.macros = macroFromGroup(this.records);
+    this.macros = complexFromGroup(this.records);
     this.focusDiary(`DiaryAdd${this._records.length}`);
   }
 
@@ -188,7 +189,7 @@ export class DiaryComponent {
     todayMidnight.setHours(0, 0, 0, 0);
     this._db.table('diary').where('datetime').above(todayMidnight).delete().then(() => {
       this._records = [];
-      this.macros = emptyMacro();
+      this.macros = emptyNutrient();
       this.focusDiary('ResetDiary');
     });
   }

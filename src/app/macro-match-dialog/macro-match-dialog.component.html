@@ -1,11 +1,11 @@
 <div class="p-3">
   <h3>Target:</h3>
-  <app-macros-bar [macros]="target" class="d-flex flex-row flex-nowrap">
+  <app-macros-bar [macros]="target">
     >
   </app-macros-bar>
   <ul *ngFor="let option of bestOptions">
     <li >{{ option[2] }} | {{ (100 - option[0]).toFixed(0) }}%</li>
-    <app-macros-bar [macros]="option[1]" class="d-flex flex-row flex-nowrap">
+    <app-macros-bar [macros]="option[1]">
         </app-macros-bar>
   </ul>
   <!-- button to start matching -->

@@ -7,6 +7,31 @@ export interface Macronutrients {
   kcal: number;
 }
 
+export enum MacronutrientUnit {
+  carbs = 'g',
+  prots = 'g',
+  fats = 'g',
+  kcal = '',
+}
+
+export interface SecondaryNutrients {
+    sodium: number,
+    fibers: number,
+}
+
+export enum SecondaryNutrientUnit {
+  sodium = 'mg',
+  fibers = 'g',
+}
+
+export interface LabeledNutrient extends Macronutrients, SecondaryNutrients { 
+  name: string;
+  meal: string; // this is relational to meal table;
+  source: string; // this is relational to fatsecret fat table;
+  unit: string;
+  amount: number;
+}
+
 export function emptyMacro(): Macronutrients {
   return {
     carbs: 0,
@@ -24,7 +49,7 @@ export function emptyNutrient(): ComplexNutrient {
     unit: '',
     amount: 0,
     sodium: 0,
-    fiber: 0,
+    fibers: 0,
     ...emptyMacro(),
     complex: [],
   };
@@ -58,15 +83,7 @@ export function generateUUID() { // Public Domain/MIT
   });
 }
 
-export interface LabeledNutrient extends Macronutrients {
-  name: string;
-  meal: string; // this is relational to meal table;
-  source: string; // this is relational to fatsecret fat table;
-  unit: string;
-  amount: number;
-  sodium: number;
-  fiber: number;
-}
+
 function hashCode(str: string) {
   let hash = 0;
   for (let i = 0, len = str.length; i < len; i++) {
@@ -108,7 +125,7 @@ export function computeComplexMacro(
     macro.prots += item[0].prots * weighted;
     macro.fats += item[0].fats * weighted;
     macro.sodium += item[0].sodium * weighted;
-    macro.fiber += item[0].fiber * weighted;
+    macro.fibers += item[0].fibers * weighted;
     macro.amount += item[0].amount * weighted;
     macro.name += `${item[0].name}`;
     if (groupWeight) macro.name += `(${(weighted * 100).toFixed(1)}%)`;
@@ -136,7 +153,7 @@ export function dataFromReference(
     prots: data.prots * scaleFactor,
     fats: data.fats * scaleFactor,
     sodium: data.sodium * scaleFactor,
-    fiber: data.fiber * scaleFactor,
+    fibers: data.fibers * scaleFactor,
   };
   return scaledData;
 }
@@ -156,6 +173,12 @@ export function macroFromGroup(data: Macronutrients[]): Macronutrients {
     macro.fats += element.fats;
   });
   return macro;
+}
+
+export function complexFromGroup(data: ComplexNutrient[]): ComplexNutrient{
+  let nut = emptyNutrient();
+  nut.complex = data.map((element) => [element, 1]);
+  return computeComplexMacro(nut, false);
 }
 
 export function macroRatio(data: Macronutrients) {
@@ -181,7 +204,7 @@ export function coerceComplexNutrient(data: ComplexNutrient): ComplexNutrient {
     prots: Number(data.prots),
     fats: Number(data.fats),
     sodium: Number(data.sodium),
-    fiber: Number(data.fiber),
+    fibers: Number(data.fibers),
     amount: Number(data.amount),
     source: data.source.toString(),  
     meal: data.meal.toString(),

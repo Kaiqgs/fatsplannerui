@@ -22,12 +22,12 @@
   </form>
   <div class="d-flex flex-row align-items-center">
     <span class="m-2"><i class="bi bi-fuel-pump"></i></span>
-    <app-macros-bar [macros]="macros" [showKcal]="true" class="d-flex flex-row flex-nowrap"></app-macros-bar>
+    <app-macros-bar [macros]="macros" [secondary]="macros" [showKcal]="true"></app-macros-bar>
   </div>
   <div class="d-flex flex-row align-items-center">
     <span class="m-2"><i class="bi bi-fire"></i></span>
     <app-macros-bar [colors]="['bg-danger', 'bg-secondary', 'bg-success', 'bg-warning']" [macros]="missingMacros"
-      [showKcal]="true" class="d-flex flex-row flex-nowrap"></app-macros-bar>
+      [showKcal]="true"></app-macros-bar>
   </div>
   <div class="d-flex">
     <!-- resetDiary() button submit -->

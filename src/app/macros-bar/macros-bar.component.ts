@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Macronutrients, macroRatio } from 'src/common/models/fatfacts.model';
+import { generateUUID, Macronutrients, MacronutrientUnit, macroRatio, SecondaryNutrients } from 'src/common/models/fatfacts.model';
 
 interface MacroDisplay {
   value: number,
@@ -16,7 +16,7 @@ interface MacroDisplay {
 })
 export class MacrosBarComponent {
   @Input()
-  public showKcal = false;
+  public showKcal = true;
 
   @Input()
   readOnly = true;
@@ -24,6 +24,11 @@ export class MacrosBarComponent {
   @Input()
   public macros: Macronutrients = { carbs: 0, prots: 0, fats: 0, kcal: 0 };
 
+  @Input()
+  public secondary: SecondaryNutrients = { sodium: 0, fibers: 0 };
+
+  identifier: string = "macrobar"+this.uuid;
+  
   public get view(): Macronutrients {
     return {
       carbs: parseFloat(this.macros.carbs.toPrecision(3)),
@@ -37,6 +42,10 @@ export class MacrosBarComponent {
     return macroRatio(this.macros);
   }
 
+  get uuid(): string{
+    return crypto.randomUUID();
+  }
+
   @Input()
   public colors: string[] = ['bg-secondary', '', 'bg-success', 'bg-danger'];
   public names: string[] = ['kcal', 'carbs', 'prots', 'fats'];
@@ -46,13 +55,14 @@ export class MacrosBarComponent {
     let map: MacroDisplay[] = [];
     // iterate each key in view() and percents();
     this.names.forEach((name, index) => {
+      
       if (!this.showKcal && index == 0) return;
       map.push({
         value: (this.view as any)[name],
         ratio: (this.percents as any)[name],
         name,
         color: this.colors[index],
-        unit: this.units[index],
+        unit: (MacronutrientUnit as any)[name],
       });
     });
     return map;

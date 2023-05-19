@@ -40,7 +40,7 @@ export class AddNutrientDialogComponent {
     });
     this.thirdFormGroup = this._formBuilder.group({
       sodium: [0],
-      fiber: [0],
+      fibers: [0],
     });
     this.complexFormGroup = this._formBuilder.group({});
   }
@@ -72,7 +72,7 @@ export class AddNutrientDialogComponent {
       meal: "Other",
       source: "User",
       sodium: this.thirdFormGroup.value.sodium,
-      fiber: this.thirdFormGroup.value.fiber,
+      fibers: this.thirdFormGroup.value.fibers,
       complex: this._complexNutrient.complex,
     };
     return coerceComplexNutrient(data);
@@ -93,7 +93,7 @@ export class AddNutrientDialogComponent {
 
     this.thirdFormGroup.patchValue({
       sodium: nutrient.sodium,
-      fiber: nutrient.fiber,
+      fibers: nutrient.fibers,
     });
     this._complexNutrient = nutrient;
   }

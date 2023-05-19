@@ -162,7 +162,6 @@ export class NutrientBankComponent {
     downloadAnchorNode.remove();
   }
 
-  //erase cookies and reload page;
   public resetDatabase() {
     this._db.table('nutrientBank').clear();
     window.location.reload();

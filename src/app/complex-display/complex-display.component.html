@@ -23,7 +23,7 @@
       <!-- </a> -->
     </div>
     <div [class]="defaultCollapsed? 'collapse' : ''" [id]="identifier">
-      <app-macros-bar [macros]="complex" [showKcal]="true" class="d-flex m-1"></app-macros-bar>
+      <app-macros-bar [macros]="complex" [secondary]="complex" [showKcal]="true"></app-macros-bar>
       <app-complex-display *ngFor="let inner of complex.complex" [complex]="inner[0]" [width]="width*0.9"
         [level]="level+1" (edit)="onEdit(level+1)" (delete)="onDelete(level+1)"
         >
