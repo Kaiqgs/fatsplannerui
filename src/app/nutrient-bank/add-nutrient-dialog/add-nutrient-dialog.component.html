@@ -1,20 +1,3 @@
-<!-- 
-a form with the following fields:
-    [first group]
-        - name: string;
-        - unit: string;
-        - amount: number;
-    
-    [second group]
-        - carbs: number;
-        - prots: number;
-        - fats: number;
-    
-    [third group]
-        - sodium: number;
-        - fiber: number;
- -->
-
 <form [style]="sizeLarge ? 'width: 50rem;' : ''">
   <mat-vertical-stepper>
     <mat-step *ngIf="source.length" [stepControl]="complexFormGroup">
@@ -73,9 +56,9 @@ a form with the following fields:
         <ng-template matStepLabel>Details</ng-template>
         <label for="sodium">Sodium</label>
         <input class="form-control" matInput placeholder="1000" formControlName="sodium" />
-        <!-- Fiber -->
-        <label for="fiber">Fiber</label>
-        <input class="form-control" matInput placeholder="2" formControlName="fiber" />
+        <!-- Fibers -->
+        <label for="fibers">Fibers</label>
+        <input class="form-control" matInput placeholder="2" formControlName="fibers" />
         <div>
           <button class="btn btn-primary" mat-button matStepperPrevious>Back</button>
           <button class="btn btn-primary" mat-button matStepperNext (click)="onSubmit()">Submit</button>

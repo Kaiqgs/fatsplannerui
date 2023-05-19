@@ -4,16 +4,19 @@
 - [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
 - [ ] fix bug where shift+a opens add-nutrient(complex) in another add-nutrient;
 - [ ] fix bug where shift+s submits addNutrient(non-complex) form;
+- [ ] fix bug where macro diary input does not change correctly on click
+- [ ] fix bug where macro diary input does not change correctly on arrow key
 - [X] #1 as dev: compress and split cache for reliable storage;
   - [X] deprecated due to Indexed DB
 - [X] #1 as a dev: use reliable indexedDB for local storage
 - [ ] #2 as a user: use delete button
-  - [ ] .a delete for diary
+  - [X] .a delete for diary
   - [ ] .b delete for nutrientBank
 - [ ] #3 as a user: use edit button
   - [ ] .a edit for diary
   - [ ] .b edit for nutrientBank
-- [ ] #4 as a user: see sodium/fiber in macro-display
+- [X] #4 as a user: see sodium/fiber in macro-display
+  - [ ] .a fix bug where secondary does not space content around
 - [ ] #5 as a dev: hash ComplexNutrients, update hash in a backward propagation manner;
 - [ ] #6 as a dev: export target to use macros-bar & secondary nutrient;
 
