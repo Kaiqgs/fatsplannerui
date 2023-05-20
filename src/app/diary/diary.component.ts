@@ -11,15 +11,14 @@ import {
   dataFromReference,
   ComplexContainer,
   ComplexReadContainer,
-  macroFromGroup,
   Macronutrients,
   emptyNutrient,
   complexFromGroup,
 } from 'src/common/models/fatfacts.model';
+import { MatDatepicker } from '@angular/material/datepicker';
 import { Focusable } from '../app.component';
-
 import fuzzysort from 'fuzzysort';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MacroMatchDialogComponent } from '../macro-match-dialog/macro-match-dialog.component';
 import { PlanningDetails } from 'src/common/models/planning.model';
@@ -44,8 +43,12 @@ export class DiaryComponent {
   objOptions: ComplexContainer = [];
   mealOptions: string[] = ['Other', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
   macros: ComplexNutrient = emptyNutrient();
+  date: FormControl = new FormControl(new Date());
   private _isDialogOpen = false;
   private _records: DiarySchema[] = [];
+
+  @ViewChild(MatDatepicker, { read: undefined, static: false })
+  picker!: MatDatepicker<Date>;
 
   @Input()
   public source: ComplexReadContainer = [];
@@ -84,14 +87,36 @@ export class DiaryComponent {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log(this.picker);
+  }
+
+  get dateTodaySelected(): Date {
+    return new Date(this.date.value);
+  }
+
+  public onSelectToday() {
+    this.getToday().then((data) => {
+      this._records = data;
+      this.macros = complexFromGroup(this.records);
+      console.log("Macro", this.macros);
+      console.log("Today's data", data);
+      console.log("Today's records", this.records);
+      this.focusDiary(`Diary${Math.random()}`);
+    });
+  }
+
+  get startEndDate(): [Date, Date] {
+    const todayStart = this.dateTodaySelected;
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = this.dateTodaySelected;
+    todayEnd.setHours(23, 59, 59, 999);
+    return [todayStart, todayEnd];
+  }
 
   async getToday(): Promise<DiarySchema[]> {
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-    const todaysData = await this._db.table('diary').where('datetime').between(todayMidnight, todayEnd).toArray();
+    const [todayStart, todayEnd] = this.startEndDate;
+    const todaysData = await this._db.table('diary').where('datetime').between(todayStart, todayEnd).sortBy('id');
     return todaysData;
   };
 
@@ -155,8 +180,10 @@ export class DiaryComponent {
 
   //Adds one record to the history;
   public addRecord(record: ComplexNutrient) {
-
-    const now = new Date();
+    const now = this.dateTodaySelected;
+    const actualNowTime = new Date();
+    now.setHours(actualNowTime.getHours());
+    now.setMinutes(actualNowTime.getMinutes());
     const diaryItem = {
       record: record,
       datetime: now,
@@ -171,7 +198,7 @@ export class DiaryComponent {
   public focusDiary(name: string = 'Diary') {
     this.onFocusEvent.emit({
       name, data: this.records, handleEdit: (index: number, level: number) => {
-        
+
       },
       handleDelete: (index: number, level: number) => {
         if (level != 0) {
@@ -185,9 +212,8 @@ export class DiaryComponent {
   }
 
   public resetDiary() {
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
-    this._db.table('diary').where('datetime').above(todayMidnight).delete().then(() => {
+    const [todayStart, todayEnd] = this.startEndDate;
+    this._db.table('diary').where('datetime').between(todayStart, todayEnd).delete().then(() => {
       this._records = [];
       this.macros = emptyNutrient();
       this.focusDiary('ResetDiary');

@@ -20,7 +20,7 @@
   - [X] .b fix bug where `fiber` was not renamed to `fibers`
 - [ ] #5 as a dev: hash ComplexNutrients, update hash in a backward propagation manner;
 - [ ] #6 as a dev: export target to use macros-bar & secondary nutrient;
-- [ ] #7 as a user: go back and forth in diary dates;
+- [X] #7 as a user: go back and forth in diary dates;
 - [X] #8 as a user: see different favicons to avoid boredom;
 
 

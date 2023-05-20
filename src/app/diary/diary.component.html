@@ -1,8 +1,6 @@
 <!-- a container for title display in single page, title is `Macro Diary` -->
 <div class="d-flex flex-column align-items-center justify-content-between h-100">
   <h3>Macro Diary</h3>
-
-  <!-- bootstrap form, with a text search input, a numeric input for amount with 2 decimals, and a third input select for measure units, a fourth select input with the option of previous meals or to create a new one-->
   <form class="d-flex flex-row justify-content-center align-items-around" [formGroup]="form">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectAutocomplete($event)">
       <mat-option *ngFor="let option of objOptions" [value]="option.name">
@@ -29,23 +27,27 @@
     <app-macros-bar [colors]="['bg-danger', 'bg-secondary', 'bg-success', 'bg-warning']" [macros]="missingMacros"
       [showKcal]="true"></app-macros-bar>
   </div>
-  <div class="d-flex">
-    <!-- resetDiary() button submit -->
-    <button type="button" class="btn btn-danger" (click)="resetDiary()">
-      Reset Diary
-    </button>
-    <!-- target match button submit (click)="targetMatch()" -->
-    <button type="button" class="btn btn-secondary" (click)="matchTarget(planning.target)">
-      Target Match
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="matchTarget(missingMacros)">
-      Complement Match
-    </button>
-    <!-- <button type="button" class="btn btn-primary" (click)="showAddComplex()"> -->
-    <!--   Add complex   -->
-    <!-- </button> -->
-    <button type="button" class="btn btn-primary" (click)="addComplex()">
-      Complex
-    </button>
+  <div class="d-flex flex-column">
+    <div>
+      <button type="button" class="btn btn-danger" (click)="resetDiary()">
+        Reset Diary
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="matchTarget(planning.target)">
+        Target Match
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="matchTarget(missingMacros)">
+        Complement Match
+      </button>
+      <button type="button" class="btn btn-primary" (click)="addComplex()">
+        Complex
+      </button>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+      <input matInput [matDatepicker]="picker" readonly="true" class="form-control" style="width: 6.5rem;"
+        [formControl]="date" (dateChange)="onSelectToday()">
+      <mat-datepicker-toggle matIconSuffix [for]="picker" data-toggle="tooltip" data-placement="right"
+        title="MM/DD/YYYY"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </div>
   </div>
 </div>

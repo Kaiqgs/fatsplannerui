@@ -27,6 +27,7 @@ export class AppComponent {
   sourceFacts: ComplexContainer2D = [];
   database: ComplexContainer = [];
   constructor() {
+    //dynamic favicon
     const imgcount = 13 - 1;
     let link: HTMLLinkElement = document.createElement("link");
     let oldLink = document.getElementById('dynamic-favicon');

@@ -10,6 +10,7 @@ import { FatFactsComponent } from './fat-facts/fat-facts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MultiTableViewComponent } from './fat-facts/multi-table-view/multi-table-view.component';
 import { RecipesComponent } from './recipes/recipes.component';
 import { TableComponent } from './fat-facts/table/table.component';
@@ -30,6 +31,7 @@ import { MacroMatchDialogComponent } from './macro-match-dialog/macro-match-dial
 import { ComposeComplexDialogComponent } from './compose-complex-dialog/compose-complex-dialog.component';
 import { FactInspectComponent } from './fact-inspect/fact-inspect.component';
 import { ComplexDisplayComponent } from './complex-display/complex-display.component';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -64,9 +66,11 @@ import { ComplexDisplayComponent } from './complex-display/complex-display.compo
     MatTabsModule,
     MatDialogModule,
     ToastrModule.forRoot(),
-    CommonModule
+    CommonModule,
+    MatNativeDateModule,
+    MatDatepickerModule
   ],
-  providers: [CookieService],
+  providers: [CookieService, MatDatepickerModule],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
