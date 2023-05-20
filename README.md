@@ -21,7 +21,11 @@
 - [ ] #5 as a dev: hash ComplexNutrients, update hash in a backward propagation manner;
 - [ ] #6 as a dev: export target to use macros-bar & secondary nutrient;
 - [X] #7 as a user: go back and forth in diary dates;
+  - [X] .a small fix for datepicker, implementing filter
+  - [ ] .b fix small bug where when date changes without window reload filter does not update
 - [X] #8 as a user: see different favicons to avoid boredom;
+- [ ] #9 as a dev: take in account when a new day comes without refreshing page;
+  - [ ] .a fix #7.b;
 
 
  

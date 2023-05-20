@@ -34,6 +34,8 @@ interface DiarySchema {
   datetime: Date,
 }
 
+const allDays: Date[] = [];
+
 @Component({
   selector: 'app-diary',
   templateUrl: './diary.component.html',
@@ -73,9 +75,11 @@ export class DiaryComponent {
     if (this.planning) {
       this.macros.kcal = this.planning.target.kcal - this.macros.kcal;
     }
-    // this._db.table('diary').toArray().then((data: DiarySchema[]) => {
-    //   console.log("All data", data);
-    // });
+
+    _db.table('diary').toArray().then((data) => {
+      allDays.push(...data.map(d => d.datetime as Date));
+      allDays.push(new Date());
+    });
 
     this.getToday().then((data) => {
       this._records = data;
@@ -94,6 +98,15 @@ export class DiaryComponent {
   get dateTodaySelected(): Date {
     return new Date(this.date.value);
   }
+
+  isInDb = (d: Date | null): boolean => {
+    //TODO: handle that when new day arrives, this needs to be updated;
+    if(!allDays) return true;
+    const day = (d || new Date());
+    return allDays?.some((date) => {
+      return date.getDate() === day.getDate()
+    });
+  };
 
   public onSelectToday() {
     this.getToday().then((data) => {

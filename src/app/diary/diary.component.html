@@ -43,9 +43,9 @@
       </button>
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center">
-      <input matInput [matDatepicker]="picker" readonly="true" class="form-control" style="width: 6.5rem;"
+      <input matInput [matDatepickerFilter]="isInDb" [matDatepicker]="picker" readonly="true" class="form-control" style="width: 6.5rem;"
         [formControl]="date" (dateChange)="onSelectToday()">
-      <mat-datepicker-toggle matIconSuffix [for]="picker" data-toggle="tooltip" data-placement="right"
+      <mat-datepicker-toggle matIconSuffix  [for]="picker" data-toggle="tooltip" data-placement="right"
         title="MM/DD/YYYY"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </div>
