@@ -66,7 +66,7 @@ export class NutrientBankComponent {
   }
 
   private async _createNewNutrient(result: ComplexNutrient | LabeledNutrient | undefined | null) {
-    if (result !== undefined && result !== null) {
+    if (result) {
       const nutrient = result as ComplexNutrient;
       nutrient.meal = 'any';
       nutrient.source = 'user';
@@ -141,10 +141,7 @@ export class NutrientBankComponent {
       })
       .afterClosed()
       .subscribe((result) => {
-        console.log('Result', result);
-        if (result) {
-          this._createNewNutrient(result);
-        }
+        this._createNewNutrient(result);
       });
   }
 

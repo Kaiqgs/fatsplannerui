@@ -101,7 +101,7 @@ export class DiaryComponent {
 
   isInDb = (d: Date | null): boolean => {
     //TODO: handle that when new day arrives, this needs to be updated;
-    if(!allDays) return true;
+    if (!allDays) return true;
     const day = (d || new Date());
     return allDays?.some((date) => {
       return date.getDate() === day.getDate()
@@ -253,7 +253,6 @@ export class DiaryComponent {
       })
       .afterClosed()
       .subscribe((result) => {
-        console.log('Result', result);
         if (result) {
           this.addRecord(result);
         }
@@ -263,7 +262,7 @@ export class DiaryComponent {
 
   @HostListener('document:keydown.shift.a', ['$event'])
   keyEvent(_event: KeyboardEvent) {
-    if (!this._isDialogOpen) {
+    if (!this._isDialogOpen && document.activeElement?.tagName.toLowerCase() !== 'input') {
       this.addComplex();
     }
   }

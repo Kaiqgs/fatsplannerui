@@ -63,7 +63,11 @@ export class AddNutrientDialogComponent {
     return macros;
   }
 
-  get complexNutrient(): ComplexNutrient {
+  get complexNutrient(): ComplexNutrient | undefined {
+    if ((this._complexNutrient.complex.length === 0 && this.macros.kcal === 0) || this.firstFormGroup.value.name === '') {
+      return undefined;
+    }
+
     const data = {
       name: this.firstFormGroup.value.name,
       unit: this.firstFormGroup.value.unit,
@@ -107,7 +111,9 @@ export class AddNutrientDialogComponent {
 
   @HostListener('document:keydown.shift.s', ['$event'])
   onShiftS(event: KeyboardEvent) {
-    event.preventDefault();
-    this._dialogRef.close(this.complexNutrient);
+    if (document.activeElement?.tagName.toLowerCase() !== "input") {
+      event.preventDefault();
+      this.onSubmit();
+    }
   }
 }

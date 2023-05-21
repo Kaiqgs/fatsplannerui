@@ -1,11 +1,13 @@
 # Fatsplannerui
 
-- [X] fix bug where focused input shift+a stills open another modal;
-- [X] fix compose-complex bug where last input does not correspond to last fuzzy search results;
-- [ ] fix bug where shift+a opens add-nutrient(complex) in another add-nutrient;
-- [ ] fix bug where shift+s submits addNutrient(non-complex) form;
-- [ ] fix bug where macro diary input does not change correctly on click
-- [ ] fix bug where macro diary input does not change correctly on arrow key
+- [X] B1 fix bug where focused input shift+a stills open another modal;
+- [X] B2 fix compose-complex bug where last input does not correspond to last fuzzy search results;
+- [X] B3 fix bug where shift+a opens add-nutrient(complex) in another add-nutrient;
+- [X] B4 fix bug where shift+s submits addNutrient(non-complex) form;
+- [X] B5 fix bug where complex can be saved empty;
+- [ ] B6 fix bug where macro diary input does not change correctly on click
+- [ ] B7 fix bug where macro diary input does not change correctly on arrow key
+
 - [X] #1 as dev: compress and split cache for reliable storage;
   - [X] deprecated due to Indexed DB
 - [X] #1 as a dev: use reliable indexedDB for local storage
