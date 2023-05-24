@@ -102,8 +102,9 @@ export class DiaryComponent {
   isInDb = (d: Date | null): boolean => {
     //TODO: handle that when new day arrives, this needs to be updated;
     if (!allDays) return true;
+    const compareDays = [...allDays, new Date()];
     const day = (d || new Date());
-    return allDays?.some((date) => {
+    return compareDays?.some((date) => {
       return date.getDate() === day.getDate()
     });
   };
